@@ -11,9 +11,8 @@ var server = net.createServer(function (socket) {
    socket.write('Welcome to TCP Chat Service\n');
 
    socket.on('data', function (data) {
-      console.log(socket.remoteAddress + ' : ' + data);
+      console.log(socket.remoteAddress + ' << ' + data);      
       sockets.forEach(function (item) {
-         console.log('client :' + socket.remoteAddress + ' send chat message');
          item.write(socket.remoteAddress + ' >> ' + data + '\n');
       });
    });
