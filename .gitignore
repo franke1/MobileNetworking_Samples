@@ -29,4 +29,5 @@ proguard/
 # Node Modules
 node_modules/
 
+.svn
 
