@@ -13,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -72,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             String url = mUrl.getText().toString();
             HttpPost post = new HttpPost(url);
 
+            // 헤더 작성
+            post.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
             // Post 메소드는 매세지 엔티티로 데이터 전송
             String title = mTitle.getText().toString();
             String director = mDirector.getText().toString();
@@ -82,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
             params.add(new BasicNameValuePair("director", director));
             UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, "UTF-8");
             post.setEntity(entity);
+
+            StringEntity stringEntity = new StringEntity("Hello");
 
             // 요청 실행
             HttpResponse response = mClient.execute(post);
