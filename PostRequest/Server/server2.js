@@ -38,7 +38,7 @@ function handlePostReqeust(req, res) {
       }
       
 		var file = files['poster'];
-      console.log('poster : ',file);
+      // console.log('poster : ',file);
       var poster;
       if ( file && file.path ) {
          poster = pathUtil.basename(file.path); 
