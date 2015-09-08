@@ -101,7 +101,7 @@ function showMovieDetail(req, res) {
 
 	if (!item) {
 		// 에러 처리 404
-		res.sendStatus(404);
+		res.status(404).send({ msg: 'Not Found' });
 		return;
 	}
 
@@ -114,7 +114,7 @@ function deleteMovie(req, res) {
 	
 	// 없는 영화 ID면 400번 에러
 	if (!movies[movie_id]) {
-		res.sendStatus(404);
+		res.status(404).send({ msg: 'Not Found' });
 		return;
 	}
 
