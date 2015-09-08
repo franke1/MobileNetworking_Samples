@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/serverAddress"
-        android:text="http://192.168.0.111:3002"/>
+        android:text="http://192.168.205.197:3001"/>
 
     <Button
         android:layout_width="wrap_content"

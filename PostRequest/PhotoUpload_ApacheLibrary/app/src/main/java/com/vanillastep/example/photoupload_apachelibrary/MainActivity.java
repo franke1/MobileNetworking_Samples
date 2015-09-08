@@ -92,11 +92,13 @@ public class MainActivity extends AppCompatActivity {
    }
 
    public void uploadContents(View v) {
-      if ( mImageUri == null ) {
-         Toast.makeText(this, "이미지를 ", Toast.LENGTH_SHORT).show();
-         return;
+      String title = mTitle.getText().toString();
+      if ( title.length() > 1 ) {
+         new FileUploadThread().start();
       }
-      new FileUploadThread().start();
+      else {
+         Toast.makeText(this, "글을 입력해주세요", Toast.LENGTH_SHORT).show();
+      }
    }
 
    class FileUploadThread extends Thread {
@@ -104,16 +106,6 @@ public class MainActivity extends AppCompatActivity {
       public void run() {
 
          try {
-            // Drawable에서 올리기
-//            InputStream drawableIs = getResources().openRawResource(R.drawable.one);
-
-            InputStream is =  getContentResolver().openInputStream(mImageUri);
-            String fileName = mImageUri.getLastPathSegment();
-            Log.d(TAG, "file Name : " + fileName);
-
-            InputStreamBody isBody = new InputStreamBody(is, fileName);
-            Log.d(TAG, "getSchemeSpecificPart : " + mImageUri.getSchemeSpecificPart());
-
             String title = mTitle.getText().toString();
 
             String host = mAddress.getText().toString();
@@ -124,7 +116,20 @@ public class MainActivity extends AppCompatActivity {
             // 기본 HTTP 모듈에는 없음.
             MultipartEntity entity = new MultipartEntity();
             entity.addPart("title", new StringBody(title, Charset.forName("utf-8")));
-            entity.addPart("poster", isBody);
+
+            if ( mImageUri != null ) {
+               // Drawable에서 올리기
+               // InputStream drawableIs = getResources().openRawResource(R.drawable.one);
+
+               InputStream is =  getContentResolver().openInputStream(mImageUri);
+               String fileName = mImageUri.getLastPathSegment();
+               Log.d(TAG, "file Name : " + fileName);
+
+               InputStreamBody isBody = new InputStreamBody(is, fileName);
+               Log.d(TAG, "getSchemeSpecificPart : " + mImageUri.getSchemeSpecificPart());
+
+               entity.addPart("poster", isBody);
+            }
 
             post.setEntity(entity);
 
