@@ -32,12 +32,13 @@ function handlePostReqeust(req, res) {
 
 	form.parse(req, function(err, fields, files) {
       if ( err ) {
+         console.error('Form parsing Error', err);
          res.sendStatus(500);
          return;   
       }
       
 		var file = files['poster'];
-      // console.log('poster : ',file);
+      console.log('poster : ',file);
       var poster;
       if ( file && file.path ) {
          poster = pathUtil.basename(file.path); 
@@ -94,4 +95,19 @@ function showMovieList(req, res) {
 	
    body += '</body></html>';
    res.end(body);
+}
+
+// For Debugging
+function showBody(req, res) {
+   console.log(req.headers);
+   console.log('===');
+   
+   var body = '';
+   req.on('data', function(chunk) {
+      body += chunk;
+   });
+   req.on('end', function() {
+      console.log(body);
+      res.sendStatus(200);
+   })
 }
