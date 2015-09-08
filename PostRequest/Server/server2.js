@@ -15,7 +15,6 @@ app.post('/', handlePostReqeust);
 app.get('/', showMovieList);
 app.get('/post', showNewMovieForm);
 
-
 app.use(express.static(uploadDir));
 
 
@@ -26,12 +25,11 @@ app.listen(3001, function() {
 var movieList = [];
 
 function handlePostReqeust(req, res) {
+   console.log(req.headers);
 	var form = new formidable.IncomingForm();
 	form.encoding = 'utf-8';
 	form.uploadDir = uploadDir;	
 	form.keepExtensions = true;
-	
-	console.log('New Movie!');
 
 	form.parse(req, function(err, fields, files) {
       if ( err ) {
@@ -40,24 +38,22 @@ function handlePostReqeust(req, res) {
       }
       
 		var file = files['poster'];
-      console.log('poster : ',file);
+      // console.log('poster : ',file);
       var poster;
       if ( file && file.path ) {
          poster = pathUtil.basename(file.path); 
       }
       
-      var title = fields['title'];
-      var director = fields['director'];
-      console.log('title : ' + title + ' director : ' + director);
+      var title = fields['title'];     
+      console.log('title : ' + title);
       
-      if ( !title || !director ) {
+      if ( !title ) {
          res.sendStatus(400);
          return;
       }
       
       var info = {
          title : title,
-         director : director,
          poster : poster
       }
       
@@ -73,7 +69,6 @@ function showNewMovieForm(req, res) {
    body += '<h3>새 영화 입력</h3>';   
  	body += '<form method="post" action="." enctype="multipart/form-data">';
    body += '<div><label>영화 제목</label><input type="text" placeholder="영화제목" name="title"></div>';
-   body += '<div><label>감독</label><input type="text" name="director" placeholder="감독"></div>';
    body += '<div><label>포스터</label><input type="file" name="poster"></div>'
    body += '<div><input type="submit" value="upload"></div>';
    body += '</form>';
@@ -92,7 +87,7 @@ function showMovieList(req, res) {
 		body += '<li>';
       if ( item.poster )
          body += '<img src="' + item.poster + '" height="100px">';
-      body += item.title + '(' + item.director + ')</li>';
+      body += item.title + '</li>';
 	}, this);
 	body += '</ul></div>';
    
