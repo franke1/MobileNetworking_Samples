@@ -25,7 +25,6 @@ app.listen(3001, function() {
 var movieList = [];
 
 function handlePostReqeust(req, res) {
-   console.log(req.headers);
 	var form = new formidable.IncomingForm();
 	form.encoding = 'utf-8';
 	form.uploadDir = uploadDir;	
