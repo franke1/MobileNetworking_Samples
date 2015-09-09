@@ -1,7 +1,6 @@
 package com.vanillastep.example.bluetoothdevicelist;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,15 +9,11 @@ import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.Set;
 
@@ -26,31 +21,28 @@ public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "Bluetooth-Sample";
    private static final int BLUETOOTH_ENABLE_REQUEST = 1;
-   private Switch mSwitch;
-   private BluetoothAdapter mBluetoothAdapter;
+   private BluetoothAdapter bluetoothAdapter;
    private ListView pairedDeviceList;
    private ArrayAdapter pairedDeviceAdapter;
    private ListView newDeviceList;
    private ArrayAdapter newDeviceAdapter;
-   private TextView mStateLabel;
+   private TextView stateLabel;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      mSwitch = (Switch)findViewById(R.id.onOffSwitch);
-      mStateLabel = (TextView)findViewById(R.id.stateLabel);
+      stateLabel = (TextView)findViewById(R.id.stateLabel);
 
       // 블루투스 아답터
-      mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-      if (mBluetoothAdapter == null) {
-         mStateLabel.setText("블루투스 지원 안함");
-         mSwitch.setEnabled(false);
+      bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+      if (bluetoothAdapter == null) {
+         stateLabel.setText("블루투스 지원 안함");
       } else {
-         mStateLabel.setText("블루투스 지원함");
+         stateLabel.setText("블루투스 지원함");
 
-         Log.d(TAG, "블루투스 어댑터 " + mBluetoothAdapter);
+         Log.d(TAG, "블루투스 어댑터 " + bluetoothAdapter);
 
          IntentFilter filter = new IntentFilter();
          filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -70,22 +62,22 @@ public class MainActivity extends AppCompatActivity {
    }
 
    public void startDiscover(View v) {
-      if (!mBluetoothAdapter.isEnabled()) {
+      if (!bluetoothAdapter.isEnabled()) {
          Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
          startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
          return;
       }
 
-      if ( mBluetoothAdapter.isDiscovering() ) {
-         mBluetoothAdapter.cancelDiscovery();
-         mStateLabel.setText("블루투스 장치 검색 중지");
+      if ( bluetoothAdapter.isDiscovering() ) {
+         bluetoothAdapter.cancelDiscovery();
+         stateLabel.setText("블루투스 장치 검색 중지");
       }
       else {
          newDeviceAdapter.clear();
          pairedDeviceAdapter.clear();
 
          // 페어링됐던 기기 목록
-         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
          if (pairedDevices.size() > 0) {
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
@@ -96,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
          // 주변 블루투스 기기 검색 시작
          Log.d(TAG, "Start discovery");
-         mBluetoothAdapter.startDiscovery();
+         bluetoothAdapter.startDiscovery();
       }
    }
 
@@ -104,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       if ( BLUETOOTH_ENABLE_REQUEST == requestCode ) {
          if ( RESULT_OK == resultCode ) {
-            mStateLabel.setText("블루투스 활성화");
+            stateLabel.setText("블루투스 활성화");
             // 다시 장치 검색 시작
             startDiscover(null);
          }
          else {
-            mStateLabel.setText("블루투스 활성화 거부");
+            stateLabel.setText("블루투스 활성화 거부");
          }
       }
    }
@@ -132,12 +124,12 @@ public class MainActivity extends AppCompatActivity {
          else if ( BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
             // 블루투스 기기 검색 시작
             Log.d(TAG, "블루투스 기기 검색 시작");
-            mStateLabel.setText("블루투스 장치 검색 시작");
+            stateLabel.setText("블루투스 장치 검색 시작");
          }
          else if ( BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             // 블루투스 기기 검색 끝
             Log.d(TAG, "블루투스 기기 검색 종료");
-            mStateLabel.setText("블루투스 기기 검색 종료");
+            stateLabel.setText("블루투스 기기 검색 종료");
          }
          else {
             Log.d(TAG, "what? : " + action);

@@ -21,14 +21,6 @@
             android:text="검색"
             android:onClick="startDiscover"/>
 
-        <Switch
-            android:id="@+id/onOffSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="Off"
-            android:textOn="On"
-            android:text="Bluetooth"/>
-
         <TextView
             android:id="@+id/stateLabel"
             android:text="State"
