@@ -60,7 +60,7 @@ function addMovie(req, res) {
 
 	var newItem = {
 		title: title,
-		review: []
+		reviews: []
 	};
 
    var director = req.body.director;
