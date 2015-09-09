@@ -44,7 +44,8 @@ public class MovieDetailActivity extends AppCompatActivity {
    void resolveMovieDetail() {
       try {
          String movieId = getIntent().getStringExtra("movieId");
-         String encoded = URLEncoder.encode(movieId, "UTF-8");
+         // 공백 문자가 +가 된다. %20으로 변환
+         String encoded = URLEncoder.encode(movieId, "UTF-8").replace("+", "%20");
          String url = MainActivity.SERVER_ADDRESS + "/movies/" + encoded;
          Log.d(TAG, "MovieDetail : " + url);
 
