@@ -154,7 +154,7 @@ function editMovie(req, res) {
 
 	// 시놉시스 수정
 	var synopsis = req.body.synopsis;
-	if (!synopsis) {
+	if (synopsis) {
 		item['synopsis'] = synopsis;
 	}
 	
