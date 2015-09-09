@@ -8,7 +8,9 @@ var server = net.createServer(function (socket) {
    // 클라이언트의 데이터 전송 이벤트
    socket.on('data', function (data) {
       console.log(socket.remoteAddress + ' : ' + data);
-      socket.write(data);
+      socket.write(data + "\r\n");
+      // 클라이언트가 한 줄 단위로 읽는다.
+      // socket.write('\n'); 
    });
    
    // 접속 종료 이벤트
