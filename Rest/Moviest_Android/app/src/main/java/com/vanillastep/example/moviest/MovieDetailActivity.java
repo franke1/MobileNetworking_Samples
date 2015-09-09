@@ -30,9 +30,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
       mMovieInfo = (TextView) findViewById(R.id.movieInfo);
 
-      // TODO : Singleton Pattern
-      // https://developer.android.com/training/volley/requestqueue.html
-      mQueue = Volley.newRequestQueue(this);
+      mQueue = RequestQueueSingleton.getInstance(this).getRequestQueue();
+
    }
 
    @Override

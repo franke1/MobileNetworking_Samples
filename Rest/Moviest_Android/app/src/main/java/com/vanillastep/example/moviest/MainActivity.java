@@ -59,7 +59,10 @@ public class MainActivity extends AppCompatActivity {
          }
       });
 
-      mQueue = Volley.newRequestQueue(this);
+      // Singleton 사용
+      // https://developer.android.com/training/volley/requestqueue.html
+//      mQueue = Volley.newRequestQueue(this);
+      mQueue = RequestQueueSingleton.getInstance(this).getRequestQueue();
    }
 
    @Override
