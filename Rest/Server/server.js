@@ -55,6 +55,7 @@ function addMovie(req, res) {
 	// 제목이 없으면 에러
 	if (!title) {
 		res.status(400).send({ msg: 'no title' });
+      return;
 	}
 
 	var newItem = {
@@ -79,13 +80,13 @@ function addMovie(req, res) {
 	}
 
 	var synopsis = req.body.synopsis;
-	if (!synopsis) {
+	if (synopsis) {
 		newItem['synopsis'] = synopsis;
 	}
 
 	movies[title] = newItem;
 
-   var result = { 'new item': title };
+   var result = { 'newMovieId': title };
 
 	res.json(result);
 }
