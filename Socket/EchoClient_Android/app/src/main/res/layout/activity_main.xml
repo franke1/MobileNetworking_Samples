@@ -4,65 +4,30 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-
-
-    <TextView
-        android:layout_width="60dp"
+    <EditText
+        android:id="@+id/portInput"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:id="@+id/ipLabel"
-        android:text="IP 주소"/>
+        android:layout_alignParentRight="true"
+        android:hint="포트"
+        android:text="3000" />
 
     <EditText
+        android:id="@+id/ipInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/ipLabel"
-        android:layout_alignBaseline="@id/ipLabel"
-        android:text="192.168.0.105"
-        android:id="@+id/ipInput" />
-
-    <TextView
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ipLabel"
-        android:layout_marginTop="30dp"
-        android:layout_alignParentLeft="true"
-        android:text="포트"
-        android:id="@+id/portLabel"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/portLabel"
-        android:layout_alignBaseline="@id/portLabel"
-        android:text="3000"
-        android:id="@+id/portInput"/>
-
-    <TextView
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/portLabel"
-        android:id="@+id/messageLabel"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="30dp"
-        android:textAlignment="center"
-        android:text="메세지"/>
-
-    <EditText
-        android:id="@+id/messageInput"
-        android:layout_toRightOf="@id/messageLabel"
-        android:layout_alignBaseline="@id/messageLabel"
-        android:layout_marginTop="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_toLeftOf="@id/portInput"
+        android:layout_marginRight="8dp"
+        android:layout_alignBottom="@id/portInput"
+        android:hint="IP 주소"
+        android:text="192.168.0.71" />
 
     <LinearLayout
-        android:layout_below="@id/messageLabel"
-        android:layout_marginTop="20dp"
+        android:layout_below="@id/ipInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonGroup"
-        >
+        android:id="@+id/buttonGroup">
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,18 +42,30 @@
             android:onClick="closeConnection"
             android:text="종료"/>
 
-        <Button
-            android:layout_below="@id/messageLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="보내기"
-            android:onClick="sendMessage"/>
     </LinearLayout>
+
+    <Button
+        android:layout_below="@id/buttonGroup"
+        android:id="@+id/sendButton"
+        android:layout_marginTop="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보내기"
+        android:onClick="sendMessage"/>
+
+    <EditText
+        android:id="@+id/messageInput"
+        android:layout_toLeftOf="@id/sendButton"
+        android:layout_alignBottom="@id/sendButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/buttonGroup">
+        android:layout_marginTop="12dp"
+        android:layout_below="@id/messageInput">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
