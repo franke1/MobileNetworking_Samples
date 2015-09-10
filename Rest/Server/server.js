@@ -18,8 +18,12 @@ app.delete('/movies/:movie_id', deleteMovie);
 app.put('/movies/:movie_id', editMovie);
 app.post('/movies/:movie_id', addReview);	
 
-// 여기까지 오면 - 그냥 목록 출력
-app.use('/', showMovieList);
+app.use(function(req, res) {
+   res.sendStatus(400);
+});
+
+// // 여기까지 오면 - 그냥 목록 출력
+// app.use('/', showMovieList);
 
 app.listen(3000, function () {
 	console.log('Moviest Server is listening @ 3000');
