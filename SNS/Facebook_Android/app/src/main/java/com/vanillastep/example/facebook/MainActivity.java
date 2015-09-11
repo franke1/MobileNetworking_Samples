@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
    private static final String TAG = "Facebook-App";
 
    private CallbackManager callbackManager;
+   private ListView listView;
+   private ArrayAdapter<String> adapter;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +41,15 @@ public class MainActivity extends AppCompatActivity {
       FacebookSdk.sdkInitialize(getApplicationContext());
       setContentView(R.layout.activity_main);
 
-      callbackManager = CallbackManager.Factory.create();
+      listView = (ListView)findViewById(R.id.listView);
+      adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+      listView.setAdapter(adapter);
 
-      // 쿠키 매니저
-      // TODO : 영구 저장 필요
-//      java.net.CookieManager cookieManager = new java.net.CookieManager();
-//      cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-//      CookieHandler.setDefault(cookieManager);
+      callbackManager = CallbackManager.Factory.create();
 
       // FB 로그인 버튼
       LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-
-      loginButton.setReadPermissions("email", "public_profile");
+      loginButton.setReadPermissions("email", "public_profile", "user_posts");
 
       LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
          @Override
@@ -65,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
             // 토큰 만료 기간
             Date expires = token.getExpires();
             Log.d(TAG, "Expires : " + expires.toString());
-
          }
 
          @Override
@@ -85,37 +85,43 @@ public class MainActivity extends AppCompatActivity {
    @Override
    protected void onResume() {
       super.onResume();
-
-
    }
 
    public void showFeed(View v) {
       AccessToken accessToken = AccessToken.getCurrentAccessToken();
       if ( accessToken == null ) {
-         Toast.makeText(this, "AccessToken 없음", Toast.LENGTH_SHORT).show();
+         Toast.makeText(this, "AccessToken 없음. 다시 로그인", Toast.LENGTH_SHORT).show();
          return;
       }
+
+      adapter.clear();
 
       GraphRequest request = GraphRequest.newMeRequest(accessToken,
               new GraphRequest.GraphJSONObjectCallback() {
                  @Override
                  public void onCompleted(JSONObject object, GraphResponse response) {
+                    if ( object == null ) {
+                       Log.d(TAG, "Complete Response : " + response);
+                       return;
+                    }
                     try {
                        JSONArray data = object.getJSONArray("data");
                        for (int i = 0 ; i < data.length() ; i++ ) {
                           JSONObject item = (JSONObject) data.get(i);
-                          Log.d(TAG, item.getString("message"));
+                          if ( item.has("message") ) {
+                             String message = item.getString("message");
+                             adapter.add(message);
+                          }
                        }
+                       adapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                        e.printStackTrace();
                     }
                  }
 
-              });
-
-      Bundle parameters = new Bundle();
-      parameters.putString("fields", "message,picture,created_time");
-      request.setParameters(parameters);
+              }
+      );
+      request.setGraphPath("/me/feed");
       request.executeAsync();
    }
 
@@ -124,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-
-      Log.d(TAG, "onActivityResult : requestCode " + requestCode + " resultCode : " + resultCode);
+      callbackManager.onActivityResult(requestCode, resultCode, data);
    }
 }
