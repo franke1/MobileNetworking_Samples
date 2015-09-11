@@ -33,12 +33,11 @@ public class MainActivity extends AppCompatActivity {
    private RequestQueue mQueue;
    private ListView listView;
 
-   String serverAddr = "http://192.168.205.118:8080";
-   String serverAddrSecure = "https://192.168.205.118:8081";
    private ArrayAdapter adapter;
    private EditText userId;
    private EditText userPassword;
    private EditText newTalk;
+   private EditText serverAddress;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
       userId = (EditText) findViewById(R.id.userId);
       userPassword = (EditText) findViewById(R.id.userPassword);
       newTalk = (EditText)findViewById(R.id.newTalk);
+      serverAddress = (EditText)findViewById(R.id.serverAddress);
+
 
       java.net.CookieManager cookieManager = new java.net.CookieManager();
       cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    public void login(View v) {
+      String serverAddr = serverAddress.getText().toString();
       String url = serverAddr + "/login";
 
 
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    public void composeNewTalk(View v) {
+      String serverAddr = serverAddress.getText().toString();
       String url = serverAddr + "/talks";
       final String talk = newTalk.getText().toString();
       Log.d(TAG, "Compose New Talk " + url + " talk : " + talk);
@@ -127,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    public void refresh(View v) {
+      String serverAddr = serverAddress.getText().toString();
       String url = serverAddr + "/talks";
       Log.d(TAG, "Refresh : " + url);
       adapter.clear();
