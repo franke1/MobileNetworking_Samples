@@ -65,7 +65,7 @@ function handlePostReqeust(req, res) {
 function showNewMovieForm(req, res) {
 	res.writeHeader(200, {'Content-Type':'text/html; charset=utf-8'});
    
-   var body = '<html><body>'
+   var body = '<html><head><meta charset="utf-8"></head><body>'
    body += '<h3>새 영화 입력</h3>';   
  	body += '<form method="post" action="." enctype="multipart/form-data">';
    body += '<div><label>영화 제목</label><input type="text" placeholder="영화제목" name="title"></div>';
@@ -79,7 +79,7 @@ function showNewMovieForm(req, res) {
 function showMovieList(req, res) {   
 	res.writeHeader(200, {'Content-Type':'text/html; charset=utf-8'});
    
-   var body = '<html><body>'
+   var body = '<html><head><meta charset="utf-8"></head><body>'
    body += '<h3>Favorite Movie</h3>';
 	body += '<div><ul>';
 	
