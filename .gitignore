@@ -31,6 +31,5 @@ proguard/
 # Node Modules
 node_modules/
 
-.idea
 .svn
 
