@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +20,11 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
+   String host = "192.168.0.16";
+   int port = 3000;
+
    private static final String TAG = "ChatClient_Example";
+
    private EditText userInput;
    private TextView resultView;
 
@@ -31,22 +36,34 @@ public class MainActivity extends AppCompatActivity {
       userInput = (EditText) findViewById(R.id.messageInput);
       resultView = (TextView) findViewById(R.id.resultView);
 
+      Button connectButton = (Button)findViewById(R.id.connectButton);
+      connectButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            connectToServer();
+         }
+      });
+
+      Button disconnectButton = (Button)findViewById(R.id.disconnectButton);
+      disconnectButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            closeConnection();
+         }
+      });
+
+      TextView address = (TextView) findViewById(R.id.serverAddress);
+      address.setText(host + ":" + port);
    }
 
    // 연결 버튼의 이벤트 리스너
-   public void connectToServer(View v) {
+   private void connectToServer() {
       if (null != chatThread && chatThread.isConnected()) {
          Toast.makeText(this, "이미 연결돼있습니다.", Toast.LENGTH_SHORT).show();
          return;
       }
 
-      EditText ipInput = (EditText) findViewById(R.id.ipInput);
-      EditText portInput = (EditText) findViewById(R.id.portInput);
-
       try {
-         String host = ipInput.getText().toString();
-         int port = Integer.parseInt(portInput.getText().toString());
-
          chatThread = new ChatThread(host, port);
          chatThread.start();
       } catch (Exception e) {
@@ -62,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
    public void sendMessage(View v) {
       if (chatThread != null && chatThread.isConnected()) {
          // 사용자가 입력한 문자열을 전송 쓰레드를 통해서 보내기
-         String message = userInput.getText().toString();
+         String message = userInput.getText().toString() + "\n";
          chatThread.sendMessage(message);
       } else {
          Toast.makeText(this, "서버와 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
@@ -70,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    // 종료 버튼 이벤트 리스너
-   public void closeConnection(View v) {
+   private void closeConnection() {
       if (chatThread != null) {
          chatThread.closeChat();
          chatThread = null;
@@ -101,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
       private String host;
       private int port;
       private Socket socket;
-      boolean quit = false;
 
       ChatThread(String host, int port) {
          this.host = host;
@@ -126,36 +142,49 @@ public class MainActivity extends AppCompatActivity {
       }
 
       void closeChat() {
-         if (socket.isConnected()) {
-            quit = true;
+         if (socket != null && socket.isConnected()) {
+            try {
+               socket.close();
+            } catch (IOException e) {
+               Log.e(TAG, "Error", e);
+            }
          }
       }
 
       @Override
       public void run() {
+         InputStream is = null;
+         BufferedReader reader = null;
          try {
             socket = new Socket(host, port);
             Log.d(TAG, "Socket connected? " + socket.isConnected());
 
-            InputStream is = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            is = socket.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(is));
             String line;
-            while (quit == false) {
+            while (true) {
                line = reader.readLine();
                if (line == null)
                   break;
 
                mHanlder.printMessage(line);
             }
-
-            mHanlder.printMessage("Chat service disconnected");
-
-            Log.d(TAG, "closing socket, reader, is");
-            reader.close();
-            is.close();
-            socket.close();
          } catch (IOException e) {
             Log.e(TAG, "Exception", e);
+         }
+         finally {
+            Log.d(TAG, "closing socket, reader, is");
+            mHanlder.printMessage("Chat service disconnected");
+            try {
+               if ( reader != null )
+                  reader.close();
+               if ( is != null)
+                  is.close();
+               if ( socket != null )
+                  socket.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
          }
 
       }
