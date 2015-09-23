@@ -18,20 +18,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/startButton"
-            android:text="Start Server"
-            android:onClick="startServer"/>
+            android:text="Start Server"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discoverable"
-            android:onClick="makeDiscoverable"/>
+            android:id="@+id/discoverableButton"
+            android:text="Discoverable" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discover"
-            android:onClick="startDiscover"/>
+            android:id="@+id/discoverButton"
+            android:text="Discover" />
     </LinearLayout>
 
     <LinearLayout

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -63,6 +64,30 @@ public class MainActivity extends AppCompatActivity {
       IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
       filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
       registerReceiver(mReceiver, filter);
+
+      Button startButton = (Button) findViewById(R.id.startButton);
+      startButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            startServer();
+         }
+      });
+
+      Button discoverableButton = (Button) findViewById(R.id.discoverableButton);
+      discoverableButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            makeDiscoverable();
+         }
+      });
+
+      Button discoverButton = (Button) findViewById(R.id.discoverButton);
+      discoverButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            startDiscover();
+         }
+      });
    }
 
    private Handler handler = new Handler();
@@ -81,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
    * */
 
    // 검색 가능하게 하기
-   public void makeDiscoverable(View v) {
+   void makeDiscoverable() {
       if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
          showMessage("검색 가능 상태 변경 시작");
 
@@ -147,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
       }
    };
 
-   public void startServer(View v) {
+   void startServer() {
       ServerThread server = new ServerThread();
       server.start();
    }
@@ -208,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
    private ClientThread clientThread;
 
    // 기기 검색 액티비티
-   public void startDiscover(View v) {
+   void startDiscover() {
       Intent intent = new Intent(this, DeviceListActivity.class);
       startActivityForResult(intent, 0);
    }
@@ -298,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
       }
 
       String message = editText.getText().toString();
-      chatThread.sendMessage(message + "\r\n");
+      chatThread.sendMessage(message);
    }
    private ChatThread chatThread;
    class ChatThread extends Thread {
@@ -318,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Sending : " + msg);
             showMessage(">> " + msg);
             bos.write(msg.getBytes());
+            bos.writeChars("\n"); // Buffer, line 기반
          } catch (IOException e) {
             Log.e(TAG, "Error ", e);
             e.printStackTrace();
@@ -334,11 +360,7 @@ public class MainActivity extends AppCompatActivity {
             is = mSocket.getInputStream();
             OutputStream os = mSocket.getOutputStream();
             bos = new DataOutputStream(os);
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
 
-         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line = null;
             while ( true ) {
