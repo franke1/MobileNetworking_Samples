@@ -39,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
       int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
       Log.d(TAG, "isGooglePlayServicesAvailable : " + resultCode);
       if (ConnectionResult.SUCCESS == resultCode) {
-         // 서비스 가능
+         // 구글 플레이 서비스 가능
          Toast.makeText(this, "플레이 서비스 사용 가능", Toast.LENGTH_SHORT).show();
       } else {
-         // 서비스 불가시 - 설치/업데이트 다이얼로그 출력
+         // 구글 플레이 서비스 불가능 - 설치/업데이트 다이얼로그 출력
          GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, 0).show();
       }
    }
