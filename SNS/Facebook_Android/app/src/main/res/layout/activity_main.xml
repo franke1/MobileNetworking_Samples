@@ -22,10 +22,9 @@
             android:layout_marginTop="30dp"/>
 
         <Button
-            android:id="@+id/refreshButton"
+            android:id="@+id/showFeedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="showFeed"
             android:text="피드 읽기"/>
 
     </LinearLayout>

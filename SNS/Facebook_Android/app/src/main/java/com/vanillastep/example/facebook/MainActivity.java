@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -45,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
       adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
       listView.setAdapter(adapter);
 
+
+      Button feedButton = (Button) findViewById(R.id.showFeedButton);
+      feedButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            showFeed();
+         }
+      });
+
       callbackManager = CallbackManager.Factory.create();
 
       // FB 로그인 버튼
@@ -59,9 +69,7 @@ public class MainActivity extends AppCompatActivity {
             String userId = token.getUserId();
             String tokenStr = token.getToken();
 
-            Log.d(TAG, "Token : " + token);
-            Log.d(TAG, "User ID : " + userId);
-            Log.d(TAG, "Token Str : " + tokenStr);
+            Log.d(TAG, "Token : " + token + "User ID : " + userId + "Token Str : " + tokenStr);
 
             // 토큰 만료 기간
             Date expires = token.getExpires();
@@ -83,19 +91,23 @@ public class MainActivity extends AppCompatActivity {
    }
 
    @Override
-   protected void onResume() {
-      super.onResume();
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      callbackManager.onActivityResult(requestCode, resultCode, data);
    }
 
-   public void showFeed(View v) {
+   // Feed 읽기
+   void showFeed() {
       AccessToken accessToken = AccessToken.getCurrentAccessToken();
       if ( accessToken == null ) {
          Toast.makeText(this, "AccessToken 없음. 다시 로그인", Toast.LENGTH_SHORT).show();
          return;
       }
 
+      // 목록 초기화
       adapter.clear();
 
+      // FB의 피드 읽기 요청
       GraphRequest request = GraphRequest.newMeRequest(accessToken,
               new GraphRequest.GraphJSONObjectCallback() {
                  @Override
@@ -123,13 +135,5 @@ public class MainActivity extends AppCompatActivity {
       );
       request.setGraphPath("/me/feed");
       request.executeAsync();
-   }
-
-
-
-   @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      callbackManager.onActivityResult(requestCode, resultCode, data);
    }
 }
