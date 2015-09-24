@@ -5,11 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -30,14 +33,19 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "LocalAuth-Sample";
+   static final String serverAddress = "http://192.168.0.15:3000";
+
    private RequestQueue mQueue;
    private ListView listView;
 
    private ArrayAdapter adapter;
+
+   // For Login
    private EditText userId;
    private EditText userPassword;
+
+   // New Talk
    private EditText newTalk;
-   private EditText serverAddress;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +61,45 @@ public class MainActivity extends AppCompatActivity {
       userId = (EditText) findViewById(R.id.userId);
       userPassword = (EditText) findViewById(R.id.userPassword);
       newTalk = (EditText)findViewById(R.id.newTalk);
-      serverAddress = (EditText)findViewById(R.id.serverAddress);
 
+      TextView addressView = (TextView)findViewById(R.id.serverAddress);
+      addressView.setText("Server : " + serverAddress);
 
+      // 로그인 버튼
+      Button loginButton = (Button)findViewById(R.id.loginButton);
+      loginButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            login();
+         }
+      });
+
+      // 컨텐츠 다시 얻기
+      Button refreshButton = (Button)findViewById(R.id.refreshButton);
+      refreshButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            refresh();
+         }
+      });
+
+      // 새 글 쓰기 버튼
+      Button composeButton = (Button) findViewById(R.id.composeButton);
+      composeButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            composeNewTalk();
+         }
+      });
+
+      // 쿠키 매니저 설정
       java.net.CookieManager cookieManager = new java.net.CookieManager();
       cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
       CookieHandler.setDefault(cookieManager);
    }
 
-   @Override
-   protected void onResume() {
-      super.onResume();
-      refresh(null);
-   }
-
-   public void login(View v) {
-      String serverAddr = serverAddress.getText().toString();
-      String url = serverAddr + "/login";
-
+   void login() {
+      String url = serverAddress + "/login";
 
       StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
          @Override
@@ -86,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                Log.d(TAG, "Status Code : " + error.networkResponse.statusCode);
             }
 
-            Toast.makeText(MainActivity.this, "LoginFail", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Login Fail", Toast.LENGTH_SHORT).show();
          }
       }) {
          @Override
@@ -101,22 +130,23 @@ public class MainActivity extends AppCompatActivity {
       mQueue.add(req);
    }
 
-   public void composeNewTalk(View v) {
-      String serverAddr = serverAddress.getText().toString();
-      String url = serverAddr + "/talks";
+   void composeNewTalk() {
+      String url = serverAddress + "/talks";
       final String talk = newTalk.getText().toString();
       Log.d(TAG, "Compose New Talk " + url + " talk : " + talk);
       StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
          @Override
          public void onResponse(String response) {
-            Log.d(TAG, "Success : " + response);
-            refresh(null);
+            refresh();
          }
       }, new Response.ErrorListener() {
          @Override
          public void onErrorResponse(VolleyError error) {
-            Toast.makeText(MainActivity.this, "새 글쓰기 에러", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Post New Talk Error " + error.networkResponse.statusCode, error);
+            Log.e(TAG, "Post New Talk Error", error);
+            NetworkResponse res = error.networkResponse;
+            if ( res  != null ) {
+               Toast.makeText(MainActivity.this, "에러 : " + res.statusCode, Toast.LENGTH_SHORT).show();
+            }
          }
       }) {
          @Override
@@ -129,9 +159,8 @@ public class MainActivity extends AppCompatActivity {
       mQueue.add(request);
    }
 
-   public void refresh(View v) {
-      String serverAddr = serverAddress.getText().toString();
-      String url = serverAddr + "/talks";
+   void refresh() {
+      String url = serverAddress + "/talks";
       Log.d(TAG, "Refresh : " + url);
       adapter.clear();
       JsonObjectRequest request = new JsonObjectRequest(url, new Response.Listener<JSONObject>() {
@@ -153,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
       }, new Response.ErrorListener() {
          @Override
          public void onErrorResponse(VolleyError error) {
+            Toast.makeText(MainActivity.this, "에러 : " + error.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error", error);
          }
       });
