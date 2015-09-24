@@ -67,12 +67,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // HTTP Server
 var server = http.createServer(app);
-server.listen(8080, function(err) {
+server.listen(3000, function(err) {
    if ( err ) {
       console.error('Error', err);
    }
    else {
-      console.log('Http server is listening @ 8080');
+      console.log('Http server is listening @ 3000');
    }
 });
 
@@ -84,7 +84,7 @@ var options = {
 
 var https = require('https');
 var secureServer = https.createServer(options, app);
-secureServer.listen(8081, function(err) {
+secureServer.listen(3001, function(err) {
    if ( err ) {
       console.error('Error', err);
    }
@@ -100,7 +100,7 @@ function isAuthenticated(req, res, next) {
     return next();
   }
   else {
-    res.sendStatus(401);    
+    res.status(401).send({'msg':'Unauthorized!'});    
   }  
 }
 
@@ -130,7 +130,7 @@ function postTalk(req, res) {
    console.log('post talk ', req.body);
    var newTalk = req.body['talk'];
    if ( ! newTalk ) {
-      res.sendStatus(400);
+      res.status(401).send({'msg':'Unauthorized!'});
       return;
    }
    
