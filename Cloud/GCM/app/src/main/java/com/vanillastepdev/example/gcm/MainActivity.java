@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +33,34 @@ public class MainActivity extends AppCompatActivity {
       setContentView(R.layout.activity_main);
       tokenLabel = (TextView) findViewById(R.id.tokenLabel);
       handler = new Handler();
+
+      Button checkButton = (Button)findViewById(R.id.checkPlayServiceButton);
+      checkButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            checkPlayService();
+         }
+      });
+
+      Button requestTokenButton = (Button)findViewById(R.id.requestDeviceTokenButton);
+      requestTokenButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            requestDeviceToken();
+         }
+      });
+
+      Button registTokenButton = (Button)findViewById(R.id.registTokenButton);
+      registTokenButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Log.d(TAG, "Regist Device Token to App Server");
+         }
+      });
    }
 
    // 플레이 서비스 사용 가능 여부 체크
-   public void checkPlayService(View v) {
+   void checkPlayService() {
       int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
       Log.d(TAG, "isGooglePlayServicesAvailable : " + resultCode);
       if (ConnectionResult.SUCCESS == resultCode) {
@@ -59,15 +84,16 @@ public class MainActivity extends AppCompatActivity {
       Log.d(TAG, "onNewIntent : " + intent);
    }
 
-   public void registDevice(View v) {
-      // RegistrationIntentService에서 토큰 발급 브로드캐스트 리시버
+   // Registration Intent Service를 이용해서 토큰 발급 받기
+   void requestDeviceToken() {
+      // 토큰 발급 브로드캐스트 리시버
       LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
          @Override
          public void onReceive(Context context, Intent intent) {
             String token = intent.getExtras().getString("TOKEN");
             tokenLabel.setText(token);
          }
-      }, new IntentFilter(RegistrationIntentService.REGIST_COMPLETE_BROADCAST));
+      }, new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE_BROADCAST));
 
       Log.d(TAG, "start registration service");
 
@@ -77,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    // 토큰 직접 발급받기 - IntentService로 작성하는 것을 권장
-    class RegistThread extends Thread {
+    class RequestTokenThread extends Thread {
         @Override
         public void run() {
             Log.d(TAG, "Trying to regist device");

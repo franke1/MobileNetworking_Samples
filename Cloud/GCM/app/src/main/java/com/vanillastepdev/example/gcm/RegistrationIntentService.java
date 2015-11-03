@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public class RegistrationIntentService extends IntentService {
     static final private String TAG = "GCM_Example";
-    static public final String REGIST_COMPLETE_BROADCAST = "REGIST_COMPLETE_BROADCAST";
+    static public final String REGISTRATION_COMPLETE_BROADCAST = "REGISTRATION_COMPLETE_BROADCAST";
 
     // 파라미터 없는 public 생성자 꼭 필요
     public RegistrationIntentService() {
@@ -31,7 +31,7 @@ public class RegistrationIntentService extends IntentService {
             final String token = instanceID.getToken(getString(R.string.GCM_SenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE);
             Log.d(TAG, "Token : " + token);
 
-            Intent completeIntent = new Intent(REGIST_COMPLETE_BROADCAST);
+            Intent completeIntent = new Intent(REGISTRATION_COMPLETE_BROADCAST);
             completeIntent.putExtra("TOKEN", token);
             LocalBroadcastManager.getInstance(this).sendBroadcast(completeIntent);
 
