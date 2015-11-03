@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
       requestTokenButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            requestDeviceToken();
+            // API19 에서 에러
+//            requestDeviceToken();
+            new RequestTokenThread().start();
          }
       });
 
