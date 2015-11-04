@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
       deviceIDButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            String androidID = Settings.Secure.ANDROID_ID;
+
+            String androidID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             deviceIDLabel.setText(androidID);
             Log.d(TAG, "Android ID : " + androidID);
 
