@@ -23,7 +23,7 @@
     <TextView
         android:text="Registration Token"
         android:id="@+id/tokenLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
@@ -31,6 +31,18 @@
         android:layout_height="wrap_content"
         android:text="토큰 등록"
         android:id="@+id/registTokenButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="기기 ID"
+        android:id="@+id/getDeviceIDButton" />
+
+    <TextView
+        android:text="Device ID"
+        android:id="@+id/deviceIdLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>

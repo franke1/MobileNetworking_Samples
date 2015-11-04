@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,12 +21,14 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
 import java.io.IOException;
+import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity {
    static final private String TAG = "GCM_Example";
    private Handler handler;
    private TextView tokenLabel;
+   private TextView deviceIDLabel;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
          }
       });
 
+      // 토큰 발급 버튼과 이벤트
       Button requestTokenButton = (Button)findViewById(R.id.requestDeviceTokenButton);
       requestTokenButton.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -52,6 +56,21 @@ public class MainActivity extends AppCompatActivity {
          }
       });
 
+      Button deviceIDButton = (Button)findViewById(R.id.getDeviceIDButton);
+      deviceIDLabel = (TextView)findViewById(R.id.deviceIdLabel);
+      deviceIDButton.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            String androidID = Settings.Secure.ANDROID_ID;
+            deviceIDLabel.setText(androidID);
+            Log.d(TAG, "Android ID : " + androidID);
+
+            String uuid = UUID.randomUUID().toString();
+            Log.d(TAG, "UUID.random : " + uuid);
+         }
+      });
+
+      // 토큰 등록 버튼과 이벤트
       Button registTokenButton = (Button)findViewById(R.id.registTokenButton);
       registTokenButton.setOnClickListener(new View.OnClickListener() {
          @Override
