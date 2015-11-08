@@ -13,24 +13,11 @@
         android:text="플레이 서비스 확인"
         android:id="@+id/checkPlayServiceButton"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="등록 토큰 받기"
-        android:id="@+id/requestDeviceTokenButton" />
-
 
     <TextView
-        android:text="Registration Token"
-        android:id="@+id/tokenLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="토큰 등록"
-        android:id="@+id/registTokenButton" />
+        android:id="@+id/serverAddress"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -43,6 +30,46 @@
         android:id="@+id/deviceIdLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="토큰 받기"
+            android:id="@+id/requestDeviceTokenButton" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="토큰 등록"
+            android:id="@+id/registTokenButton" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장 토큰 삭제"
+            android:id="@+id/removeTokenButton" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="토큰"/>
+
+    <TextView
+        android:text="Registration Token"
+        android:id="@+id/tokenLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
 
 
 </LinearLayout>

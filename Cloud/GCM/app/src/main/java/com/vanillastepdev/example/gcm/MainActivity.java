@@ -1,40 +1,59 @@
 package com.vanillastepdev.example.gcm;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
    static final private String TAG = "GCM_Example";
+   static final private String serverAddress = "http://192.168.0.105:3000";
+
    private Handler handler;
-   private TextView tokenLabel;
+   private TextView registrationIDLabel;
    private TextView deviceIDLabel;
+   private RequestQueue mQueue;
+
+   private String deviceID;
+   private String registrationID;
+   private String deviceOS = "Android";
+
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
-      tokenLabel = (TextView) findViewById(R.id.tokenLabel);
+      registrationIDLabel = (TextView) findViewById(R.id.tokenLabel);
+      mQueue = Volley.newRequestQueue(this);
       handler = new Handler();
 
       Button checkButton = (Button)findViewById(R.id.checkPlayServiceButton);
@@ -61,13 +80,7 @@ public class MainActivity extends AppCompatActivity {
       deviceIDButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-
-            String androidID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-            deviceIDLabel.setText(androidID);
-            Log.d(TAG, "Android ID : " + androidID);
-
-            String uuid = UUID.randomUUID().toString();
-            Log.d(TAG, "UUID.random : " + uuid);
+            resolveDeviceID();
          }
       });
 
@@ -76,9 +89,23 @@ public class MainActivity extends AppCompatActivity {
       registTokenButton.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            Log.d(TAG, "Regist Device Token to App Server");
+            Log.d(TAG, "Register Device Token to App Server");
+            registerToken();
          }
       });
+
+      TextView addressView = (TextView)findViewById(R.id.serverAddress);
+      addressView.setText("Server Address : " + serverAddress);
+
+      showStoredToken();
+   }
+
+   private void resolveDeviceID() {
+      String androidID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+      deviceIDLabel.setText(androidID);
+      Log.d(TAG, "Android ID : " + androidID);
+
+      deviceID = androidID;
    }
 
    // 플레이 서비스 사용 가능 여부 체크
@@ -94,17 +121,6 @@ public class MainActivity extends AppCompatActivity {
       }
    }
 
-   @Override
-   protected void onResume() {
-      super.onResume();
-      Log.d(TAG, "onResume");
-   }
-
-   @Override
-   protected void onNewIntent(Intent intent) {
-      super.onNewIntent(intent);
-      Log.d(TAG, "onNewIntent : " + intent);
-   }
 
    // Registration Intent Service를 이용해서 토큰 발급 받기
    void requestDeviceToken() {
@@ -113,7 +129,12 @@ public class MainActivity extends AppCompatActivity {
          @Override
          public void onReceive(Context context, Intent intent) {
             String token = intent.getExtras().getString("TOKEN");
-            tokenLabel.setText(token);
+            if ( registrationID != token ) {
+               registrationID = token;
+               saveRegistrationID();
+            }
+
+            registrationIDLabel.setText(token);
          }
       }, new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE_BROADCAST));
 
@@ -132,12 +153,17 @@ public class MainActivity extends AppCompatActivity {
             try {
                 InstanceID instanceID = InstanceID.getInstance(MainActivity.this);
                 final String token = instanceID.getToken(getString(R.string.GCM_SenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+               if ( registrationID != token ) {
+                  registrationID = token;
+                  saveRegistrationID();
+               }
+
                 Log.d(TAG, "Token : " + token);
                 handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.this.tokenLabel.setText(token);
-                    }
+                   @Override
+                   public void run() {
+                      MainActivity.this.registrationIDLabel.setText(token);
+                   }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -145,4 +171,62 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+   void showStoredToken() {
+      SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+      String storedToken = sharedPref.getString("REGISTRATION_ID", null);
+      if ( storedToken != null ) {
+         registrationID = storedToken;
+         registrationIDLabel.setText(registrationID);
+      }
+   }
+
+   void saveRegistrationID() {
+      SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+      SharedPreferences.Editor editor = sharedPref.edit();
+      editor.putString("REGISTRATION_ID", registrationID);
+      editor.commit();
+   }
+
+   void registerToken() {
+      // Device ID가 없으면 발급
+      if ( deviceID == null )
+         resolveDeviceID();
+
+      StringRequest request = new StringRequest(Request.Method.POST, serverAddress + "/register", new Response.Listener<String>() {
+         @Override
+         public void onResponse(String response) {
+            Log.d(TAG, "Token 등록 결과  : " + response);
+            Toast.makeText(MainActivity.this, "Token 등록 성공", Toast.LENGTH_SHORT).show();
+         }
+      }, new Response.ErrorListener() {
+         @Override
+         public void onErrorResponse(VolleyError error) {
+            Log.e(TAG, "Error", error);
+            NetworkResponse response = error.networkResponse;
+            if ( response != null ) {
+               Log.e(TAG, "Error Response : " + response.statusCode);
+               Toast.makeText(MainActivity.this, "Token 등록 에러 " + response.toString(), Toast.LENGTH_SHORT).show();
+            }
+         }
+      }){
+         @Override
+         protected Map<String, String> getParams() throws AuthFailureError {
+            // 바디 작성
+            Map<String, String> params = new HashMap<>();
+            params.put("deviceID", deviceID);
+            params.put("token", registrationID);
+            params.put("os", deviceOS);
+
+            return params;
+         }
+
+         @Override
+         public String getBodyContentType() {
+            // 컨텐트 타입
+            return "application/x-www-form-urlencoded; charset=UTF-8";
+         }
+      };
+      mQueue.add(request);
+   }
 }
