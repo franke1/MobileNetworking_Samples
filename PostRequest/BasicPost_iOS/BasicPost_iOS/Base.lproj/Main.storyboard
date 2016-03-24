@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="BasicPost_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="t9P-JS-Qq3">
+                                <rect key="frame" x="20" y="72" width="560" height="101"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ggm-Ek-blc">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="30"/>
+                                        <subviews>
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://192.168.0.129:3000" borderStyle="roundedRect" placeholder="Server Address" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QfD-DF-Leo">
+                                                <rect key="frame" x="0.0" y="0.0" width="560" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="QfD-DF-Leo" secondAttribute="bottom" id="7aL-Jq-vKi"/>
+                                            <constraint firstItem="QfD-DF-Leo" firstAttribute="top" secondItem="ggm-Ek-blc" secondAttribute="top" id="G85-MQ-NfT"/>
+                                            <constraint firstAttribute="trailing" secondItem="QfD-DF-Leo" secondAttribute="trailing" id="jP1-SG-42H"/>
+                                        </constraints>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="xCY-8O-1CD">
+                                        <rect key="frame" x="0.0" y="38" width="560" height="63"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="RGe-Ke-0pg">
+                                                <rect key="frame" x="0.0" y="0.0" width="472" height="63"/>
+                                                <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YWj-Ih-rvh">
+                                                        <rect key="frame" x="0.0" y="0.0" width="472" height="30"/>
+                                                        <subviews>
+                                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Movie Title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MGv-FX-VJa">
+                                                                <rect key="frame" x="0.0" y="0.0" width="472" height="30"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                <textInputTraits key="textInputTraits"/>
+                                                            </textField>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YCG-kz-9ck">
+                                                        <rect key="frame" x="0.0" y="33" width="472" height="30"/>
+                                                        <subviews>
+                                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Director" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CO7-0s-eQh">
+                                                                <rect key="frame" x="0.0" y="0.0" width="472" height="30"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                <textInputTraits key="textInputTraits"/>
+                                                            </textField>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="51q-pw-Mzt">
+                                                <rect key="frame" x="480" y="0.0" width="80" height="63"/>
+                                                <color key="backgroundColor" red="0.89411764709999997" green="0.89411764709999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="80" id="Yjs-iP-iZD"/>
+                                                </constraints>
+                                                <state key="normal" title="Send"/>
+                                                <connections>
+                                                    <action selector="postMovieInfo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="d1P-Mp-NFu"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="51q-pw-Mzt" secondAttribute="bottom" id="51A-tB-ILa"/>
+                                            <constraint firstItem="51q-pw-Mzt" firstAttribute="top" secondItem="xCY-8O-1CD" secondAttribute="top" id="c97-CD-5L4"/>
+                                            <constraint firstAttribute="trailing" secondItem="51q-pw-Mzt" secondAttribute="trailing" id="stQ-48-d6h"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FOf-vJ-drh">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <items>
+                                    <navigationItem title="Basic Post Sample" id="KMz-ai-4xR"/>
+                                </items>
+                            </navigationBar>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vDh-Vf-Ezl">
+                                <rect key="frame" x="20" y="181" width="560" height="399"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="nNC-mP-Mfh"/>
+                                </connections>
+                            </webView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GB4-BT-L8l">
+                                <rect key="frame" x="486" y="201" width="74" height="30"/>
+                                <color key="backgroundColor" red="0.89411764709999997" green="0.89411764709999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="REFERESH"/>
+                                <connections>
+                                    <action selector="refreshInfo" destination="BYZ-38-t0r" eventType="touchUpInside" id="2vj-2g-hdT"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="vDh-Vf-Ezl" secondAttribute="bottom" constant="20" id="2il-QG-UUH"/>
+                            <constraint firstItem="FOf-vJ-drh" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="IF4-UW-geo"/>
+                            <constraint firstItem="FOf-vJ-drh" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="O7o-Sf-K8E"/>
+                            <constraint firstItem="vDh-Vf-Ezl" firstAttribute="top" secondItem="t9P-JS-Qq3" secondAttribute="bottom" constant="8" id="Q3b-zg-eOl"/>
+                            <constraint firstItem="vDh-Vf-Ezl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="TcI-mx-PBW"/>
+                            <constraint firstItem="vDh-Vf-Ezl" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="WKc-pQ-SVj"/>
+                            <constraint firstItem="t9P-JS-Qq3" firstAttribute="top" secondItem="FOf-vJ-drh" secondAttribute="bottom" constant="8" id="XBb-Zm-nhr"/>
+                            <constraint firstItem="GB4-BT-L8l" firstAttribute="trailing" secondItem="vDh-Vf-Ezl" secondAttribute="trailing" constant="-20" id="fev-sv-wjf"/>
+                            <constraint firstItem="vDh-Vf-Ezl" firstAttribute="top" secondItem="GB4-BT-L8l" secondAttribute="top" constant="-20" id="m2S-5N-jKg"/>
+                            <constraint firstAttribute="trailing" secondItem="FOf-vJ-drh" secondAttribute="trailing" id="wWW-kk-GEB"/>
+                            <constraint firstItem="t9P-JS-Qq3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="x7J-JR-CPk"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="t9P-JS-Qq3" secondAttribute="trailing" id="ys0-RB-D0d"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="movieDirector" destination="CO7-0s-eQh" id="hwp-sQ-fEA"/>
+                        <outlet property="movieTitle" destination="MGv-FX-VJa" id="A3S-5f-kiJ"/>
+                        <outlet property="serverAddress" destination="QfD-DF-Leo" id="EEM-qe-7pC"/>
+                        <outlet property="webView" destination="vDh-Vf-Ezl" id="Mnw-5p-766"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="463" y="385"/>
+        </scene>
+    </scenes>
+</document>

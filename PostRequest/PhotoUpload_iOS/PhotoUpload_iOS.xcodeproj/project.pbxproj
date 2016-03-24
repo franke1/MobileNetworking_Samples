@@ -1,0 +1,323 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2CA06D391CA4410E006BA97F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CA06D381CA4410E006BA97F /* AppDelegate.swift */; };
+		2CA06D3B1CA4410E006BA97F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CA06D3A1CA4410E006BA97F /* ViewController.swift */; };
+		2CA06D3E1CA4410E006BA97F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CA06D3C1CA4410E006BA97F /* Main.storyboard */; };
+		2CA06D401CA4410E006BA97F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CA06D3F1CA4410E006BA97F /* Assets.xcassets */; };
+		2CA06D431CA4410E006BA97F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CA06D411CA4410E006BA97F /* LaunchScreen.storyboard */; };
+		2CA06D4B1CA44655006BA97F /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA06D4A1CA44655006BA97F /* Alamofire.framework */; };
+		2CA06D4C1CA447CB006BA97F /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA06D4A1CA44655006BA97F /* Alamofire.framework */; };
+		2CA06D4D1CA447CB006BA97F /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA06D4A1CA44655006BA97F /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2CA06D4E1CA447CB006BA97F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2CA06D4D1CA447CB006BA97F /* Alamofire.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2CA06D351CA4410E006BA97F /* PhotoUpload_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoUpload_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CA06D381CA4410E006BA97F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2CA06D3A1CA4410E006BA97F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2CA06D3D1CA4410E006BA97F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2CA06D3F1CA4410E006BA97F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2CA06D421CA4410E006BA97F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2CA06D441CA4410E006BA97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2CA06D4A1CA44655006BA97F /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2CA06D321CA4410E006BA97F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CA06D4B1CA44655006BA97F /* Alamofire.framework in Frameworks */,
+				2CA06D4C1CA447CB006BA97F /* Alamofire.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2CA06D2C1CA4410E006BA97F = {
+			isa = PBXGroup;
+			children = (
+				2CA06D4A1CA44655006BA97F /* Alamofire.framework */,
+				2CA06D371CA4410E006BA97F /* PhotoUpload_iOS */,
+				2CA06D361CA4410E006BA97F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2CA06D361CA4410E006BA97F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2CA06D351CA4410E006BA97F /* PhotoUpload_iOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2CA06D371CA4410E006BA97F /* PhotoUpload_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2CA06D381CA4410E006BA97F /* AppDelegate.swift */,
+				2CA06D3A1CA4410E006BA97F /* ViewController.swift */,
+				2CA06D3C1CA4410E006BA97F /* Main.storyboard */,
+				2CA06D3F1CA4410E006BA97F /* Assets.xcassets */,
+				2CA06D411CA4410E006BA97F /* LaunchScreen.storyboard */,
+				2CA06D441CA4410E006BA97F /* Info.plist */,
+			);
+			path = PhotoUpload_iOS;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2CA06D341CA4410E006BA97F /* PhotoUpload_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2CA06D471CA4410E006BA97F /* Build configuration list for PBXNativeTarget "PhotoUpload_iOS" */;
+			buildPhases = (
+				2CA06D311CA4410E006BA97F /* Sources */,
+				2CA06D321CA4410E006BA97F /* Frameworks */,
+				2CA06D331CA4410E006BA97F /* Resources */,
+				2CA06D4E1CA447CB006BA97F /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PhotoUpload_iOS;
+			productName = PhotoUpload_iOS;
+			productReference = 2CA06D351CA4410E006BA97F /* PhotoUpload_iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2CA06D2D1CA4410E006BA97F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = VanillaStep;
+				TargetAttributes = {
+					2CA06D341CA4410E006BA97F = {
+						CreatedOnToolsVersion = 7.3;
+					};
+				};
+			};
+			buildConfigurationList = 2CA06D301CA4410E006BA97F /* Build configuration list for PBXProject "PhotoUpload_iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2CA06D2C1CA4410E006BA97F;
+			productRefGroup = 2CA06D361CA4410E006BA97F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2CA06D341CA4410E006BA97F /* PhotoUpload_iOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2CA06D331CA4410E006BA97F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CA06D431CA4410E006BA97F /* LaunchScreen.storyboard in Resources */,
+				2CA06D401CA4410E006BA97F /* Assets.xcassets in Resources */,
+				2CA06D3E1CA4410E006BA97F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2CA06D311CA4410E006BA97F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CA06D3B1CA4410E006BA97F /* ViewController.swift in Sources */,
+				2CA06D391CA4410E006BA97F /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2CA06D3C1CA4410E006BA97F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2CA06D3D1CA4410E006BA97F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		2CA06D411CA4410E006BA97F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2CA06D421CA4410E006BA97F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2CA06D451CA4410E006BA97F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2CA06D461CA4410E006BA97F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2CA06D481CA4410E006BA97F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = PhotoUpload_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vanillastepdev.ios9.PhotoUpload-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2CA06D491CA4410E006BA97F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = PhotoUpload_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vanillastepdev.ios9.PhotoUpload-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2CA06D301CA4410E006BA97F /* Build configuration list for PBXProject "PhotoUpload_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CA06D451CA4410E006BA97F /* Debug */,
+				2CA06D461CA4410E006BA97F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2CA06D471CA4410E006BA97F /* Build configuration list for PBXNativeTarget "PhotoUpload_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CA06D481CA4410E006BA97F /* Debug */,
+				2CA06D491CA4410E006BA97F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2CA06D2D1CA4410E006BA97F /* Project object */;
+}
