@@ -33,3 +33,11 @@ node_modules/
 
 .svn
 
+
+
+# iOS
+*.xcuserstate
+*.xcuserdatad
+.build/
+Carthage
+Cartfile.resolved
