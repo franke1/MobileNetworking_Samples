@@ -1,0 +1,100 @@
+<html ng-app="app">
+
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+   <script>
+      var app = angular.module('app', []);
+         app.controller('TalkController', ['$scope', '$http', '$window', '$timeout', function($scope, $http, $window, $timeout) {
+            $scope.title = 'Small Talks';
+            $scope.talks = [];
+            $scope.authenciated = false;
+            
+            $scope.resolveTalk = function() {
+               resolveTalks();
+            };
+            
+            function resolveTalks() {
+               $http.get('/talks').success(function(results) {
+                  console.log('Success : ', results);
+                  $scope.talks = results["talks"];                  
+               }).
+               error(function(error) {
+                  console.log('Resolving Talks Error : ', error);
+               });               
+            }
+            
+            $scope.uploadTalk = function() {
+               console.log('upload talk : ', $scope.newTalk)
+               $http.post('/talks', {talk: $scope.newTalk}).
+                  success(function(result){
+                     console.log('Posting new Talk success : ', result);
+                     $scope.newTalk = '';
+                     resolveTalks();                     
+                  }).
+                  error(function(error){
+                     console.log('Posting Talk Error : ', error.msg); 
+                     $window.alert('글 쓰기 실패 : ' + error.msg);  
+                  }
+               );
+            };
+            
+            $scope.login = function() {
+               var params = {username : $scope.username, password : $scope.password };
+               console.log('trying to login ', params);
+               // json으로 전달
+               $http.post('/login', params).success(function(result) {
+                  console.log('Login Success');
+                  $timeout(function() {
+                     $scope.loggedIn = true;
+                  })
+               }).error(function(error) {
+                  console.log('Login Error : ', error);
+                  $scope.loggedIn = false;
+                  $window.alert('로그인 실패 : ' + error.msg);
+               });
+            };
+            
+            $scope.logout = function() {
+               $http.delete('/logout').success(function(result) {
+                  $scope.loggedIn = false;           
+                  console.log('Logout success');       
+               }).error(function(error) {
+                  $window.alert('로그아웃 실패 : ', error.msg);
+               });
+
+            };
+         }]);
+   </script>
+</head>
+
+<body ng-controller="TalkController">
+   <h1>{{title}}</h1>
+   <div>
+      <div ng-show="!loggedIn">
+         <h3>로그인</h3>
+         <form>
+            <input type="text" name="username" ng-model="username">
+            <input type="password" name="password" ng-model="password">
+            <input type="submit" ng-click="login()">
+         </form>
+      </div>
+      <div ng-show="loggedIn">
+         <a href="#" ng-click="logout()">Logout</a>
+      </div> 
+   <div>
+   <h3>글 목록</h3>
+   <a href="#" ng-click="resolveTalk()">Refresh</a>
+   <ul>
+      <li ng-repeat="talk in talks">{{talk}}</li>
+      </li>
+   </ul>
+   <h3>새 글 쓰기</h3>
+   <form>
+      <input type="text" name="talk" ng-model="newTalk">
+      <input type="submit" value="올리기" ng-click="uploadTalk()">
+   </form>
+</body>
+
+</html>
