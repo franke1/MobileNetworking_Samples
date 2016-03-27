@@ -74,7 +74,7 @@ app.post('/login', function(req, res) {
 });
 app.delete('/logout', function(req, res) {
    req.logout();
-   res.send(200);   
+   res.sendStatus(200);   
 });
 app.use(require('./talkRouter'));
 

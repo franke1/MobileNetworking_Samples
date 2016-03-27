@@ -72,8 +72,8 @@
 <body ng-controller="TalkController">
    <h1>{{title}}</h1>
    <div>
+      <h3>로그인/로그아웃</h3>
       <div ng-show="!loggedIn">
-         <h3>로그인</h3>
          <form>
             <input type="text" name="username" ng-model="username">
             <input type="password" name="password" ng-model="password">
@@ -81,7 +81,7 @@
          </form>
       </div>
       <div ng-show="loggedIn">
-         <a href="#" ng-click="logout()">Logout</a>
+         <input type="button" ng-click="logout()" value="Logoutt" >
       </div> 
    <div>
    <h3>글 목록</h3>
