@@ -27,8 +27,8 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
    static private final String TAG = "SimplePOST-Sample";
+   static private final String serverAddress = "http://192.168.0.88:3000";
 
-   private EditText mUrl;
    private EditText mTitle;
    private EditText mDirector;
    private WebView mWebView;
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      mUrl = (EditText)findViewById(R.id.serverUrl);
       mTitle = (EditText)findViewById(R.id.title);
       mDirector = (EditText)findViewById(R.id.director);
       mWebView = (WebView)findViewById(R.id.webView);
@@ -62,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
    // 웹뷰에 목록 출력
    void refreshList() {
       Log.d(TAG, "Refresh WebView");
-      String urlStr = mUrl.getText().toString();
-      mWebView.loadUrl(urlStr);
+      mWebView.loadUrl(serverAddress);
    }
 
    Handler handler = new Handler();
@@ -74,10 +72,9 @@ public class MainActivity extends AppCompatActivity {
          try {
             String title = mTitle.getText().toString();
             String director = mDirector.getText().toString();
-            String urlStr = mUrl.getText().toString();
 
             // 요청 보내기
-            URL url = new URL(urlStr);
+            URL url = new URL(serverAddress);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // POST Method
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             // 요청 메세지 헤더
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Content-Length", String.valueOf(bodyStr.length()));
-            conn.setDoOutput(true);
+//            conn.setDoOutput(true);
             OutputStream os = conn.getOutputStream();
             os.write(bodyStr.getBytes("UTF-8"));
             os.flush();
