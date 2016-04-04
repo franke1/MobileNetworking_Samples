@@ -3,11 +3,10 @@ package com.vanillastepdev.example.photoupload_library;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -15,17 +14,11 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.ResponseHandlerInterface;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
       mImageView = (ImageView)findViewById(R.id.imageView);
       mAddress = (EditText) findViewById(R.id.serverAddress);
 
-      Button selectButton = (Button)findViewById(R.id.imageSelectButton);
-      selectButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.imageSelectButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -56,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
          }
       });
 
-      Button showListButton = (Button)findViewById(R.id.showListButton);
-      showListButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.showListButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
             String url = mAddress.getText().toString();
@@ -66,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
          }
       });
 
-      Button uploadButton = (Button)findViewById(R.id.uploadButton);
-      uploadButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.uploadButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
             uploadContent();
@@ -88,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
          Toast.makeText(this, "이미지를 선택해주세요", Toast.LENGTH_SHORT).show();
          return;
       }
-
 
       RequestParams params = new RequestParams();
       params.add("title", title);
