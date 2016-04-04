@@ -23,8 +23,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
    static private final String TAG = "SimplePOST-Sample";
+   static private final String serverAddress = "http://192.168.0.129:3000";
 
-   private EditText mUrl;
    private EditText mTitle;
    private EditText mDirector;
    private WebView mWebView;
@@ -35,12 +35,19 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      mUrl = (EditText)findViewById(R.id.serverUrl);
       mTitle = (EditText)findViewById(R.id.title);
       mDirector = (EditText)findViewById(R.id.director);
       mWebView = (WebView)findViewById(R.id.webView);
 
       queue = Volley.newRequestQueue(this);
+
+      findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            sendRequest();
+//            sendRequest2();
+         }
+      });
    }
 
    @Override
@@ -52,14 +59,65 @@ public class MainActivity extends AppCompatActivity {
    // 웹뷰에 목록 출력
    void refreshList() {
       Log.d(TAG, "Refresh WebView");
-      String urlStr = mUrl.getText().toString();
-      mWebView.loadUrl(urlStr);
+      mWebView.loadUrl(serverAddress);
+   }
+
+   void sendRequest() {
+      // 커스텀 요청 객체 생성
+      MovieInfoRequest request = new MovieInfoRequest(Request.Method.POST, serverAddress, new Response.Listener<String>() {
+         @Override
+         public void onResponse(String response) {
+            refreshList();
+         }
+      }, new Response.ErrorListener() {
+         @Override
+         public void onErrorResponse(VolleyError error) {
+            Log.e(TAG, "Error", error);
+            NetworkResponse response = error.networkResponse;
+            if ( response != null )
+               Log.e(TAG, "Error Response : " + response.statusCode);
+         }
+      });
+      request.setTitle(mTitle.getText().toString());
+      request.setDirector(mDirector.getText().toString());
+      queue.add(request);
+   }
+
+   // 상속을 이용한 요청 클래스 작성
+   class MovieInfoRequest extends StringRequest {
+
+      Map<String, String> params = new HashMap<>();
+
+      public MovieInfoRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+         super(method, url, listener, errorListener);
+      }
+
+      public MovieInfoRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+         super(url, listener, errorListener);
+      }
+
+      @Override
+      protected Map<String, String> getParams() throws AuthFailureError {
+         return params;
+      }
+
+      void setTitle(String title) {
+         params.put("title", title);
+      }
+
+      void setDirector(String director) {
+         params.put("director", director);
+      }
+
+      @Override
+      public String getBodyContentType() {
+         return "application/x-www-form-urlencoded; charset=UTF-8";
+      }
    }
 
    // 요청 보내기
-   public void sendRequest(View v) {
-      String url = mUrl.getText().toString();
-      StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+   public void sendRequest2() {
+      StringRequest request = new StringRequest(Request.Method.POST, serverAddress, new Response.Listener<String>() {
          @Override
          public void onResponse(String response) {
             refreshList();
@@ -94,6 +152,4 @@ public class MainActivity extends AppCompatActivity {
       };
       queue.add(request);
    }
-
-
 }
