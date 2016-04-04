@@ -6,43 +6,31 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.common.io.ByteStreams;
 
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "PhotoUpload-Sample";
+   private static final String serverAddress = "http://192.168.0.129:3001";
 
-   // 서버 주소
-   private EditText mAddress;
    // 제목
    private EditText mTitle;
    // 이미지 뷰
@@ -60,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
       mTitle = (EditText)findViewById(R.id.title);
       mImageView = (ImageView)findViewById(R.id.imageView);
-      mAddress = (EditText) findViewById(R.id.serverAddress);
 
       mQueue = Volley.newRequestQueue(this);
    }
@@ -98,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    public void showList(View v) {
-      String url = mAddress.getText().toString();
-      Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+      Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(serverAddress));
       startActivity(intent);
    }
 
@@ -110,11 +96,13 @@ public class MainActivity extends AppCompatActivity {
          return;
       }
 
-      String url = mAddress.getText().toString();
-      MultipartRequest req = new MultipartRequest(Request.Method.POST, url, new Response.Listener<String>() {
+      MoviePosterUploadRequest req = new MoviePosterUploadRequest(Request.Method.POST, serverAddress, new Response.Listener<String>() {
          @Override
          public void onResponse(String response) {
             Log.d(TAG, "Response : " + response);
+            Toast.makeText(MainActivity.this, "Upload Succes", Toast.LENGTH_SHORT).show();
+            mImageView.setImageBitmap(null);
+            mTitle.setText("");
          }
       }, new Response.ErrorListener() {
          @Override
@@ -129,9 +117,9 @@ public class MainActivity extends AppCompatActivity {
       mQueue.add(req);
    }
 
-   class MultipartRequest extends StringRequest {
+   class MoviePosterUploadRequest extends StringRequest {
 
-      public MultipartRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+      public MoviePosterUploadRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
          super(method, url, listener, errorListener);
       }
 
@@ -150,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
          stringUploads.put(param,content);
       }
 
-      String boundary = "multipart-part-devider";
+      String boundary = "XXXYYYZZZ";
       String lineEnd = "\r\n";
 
       @Override
