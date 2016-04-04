@@ -15,14 +15,14 @@ function successResponse(req, res) {
 }
 
 function infiniteResponse(req, res) {
-   res.write('response does not finish.');
+   res.write('Response does not finish.');
 }
 
 
 function delayedResponse(req, res) {
    setTimeout(function() {
-      res.sendStatus(200);
-   }, 10 * 1000);
+      res.status(200).send("Delayed Response");
+   }, 40 * 1000);
 }
 
 function badrequestResponse(req, res) {
@@ -30,7 +30,7 @@ function badrequestResponse(req, res) {
 }
 
 function unauthorizedReseponse(req, res) {
-   res.sendStatus(401);
+   res.status(401).send("Unauthorized");
 }
 //http://192.168.25.3:3000/infinite
 app.get('/infinite', infiniteResponse);
