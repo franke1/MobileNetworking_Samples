@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             // 요청 메세지 헤더
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Content-Length", String.valueOf(bodyStr.length()));
-//            conn.setDoOutput(true);
+            conn.setDoOutput(true);
             OutputStream os = conn.getOutputStream();
             os.write(bodyStr.getBytes("UTF-8"));
             os.flush();
