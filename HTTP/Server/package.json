@@ -9,7 +9,8 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {    
+  "dependencies": {
+    "connect-timeout": "^1.7.0",
     "express": "^4.13.3",
     "morgan": "^1.6.1"
   }
