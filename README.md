@@ -76,3 +76,21 @@ $ npm install
 $ node Server/imageUploadServer.js
 
 ### Android
+
+
+# XML/JSON
+
+
+
+# REST 서비스
+
+## 서버
+
+메소드 | 경로 | 동작
+----|----|----
+get | /movies | 영화 목록 JSON
+post | /movies | 영화 정보 추가하기. 인코딩 : URLEncoded 방식, title, director, year, synopsis
+get | /movies/:movie_id | 영화 상세 정보 보기
+delete | /movies/:movie_id | 영화 정보 삭제. :movie_id는 영화 ID
+put | /movies/:movie_id | 영화 정보 수정. URLEncoded 방식. title, director, year, synopsis
+post | /movies/:movie_id | 리뷰 추가하기. URLEncoded 방식. review=MovieReview	
