@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <title>WebSocket Chat Example</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #chatForm { position: fixed; bottom: 0; width:100% }   /* 화면 하단 고정 */
+        #messages { padding-left: 10; padding-bottom:50px; overflow: scroll;}
+        #messages li { list-style-type: none; }
+    </style>
+</head>
+<body>
+<h1>WebSocket Chatting</h1>
+<div>
+    <ul id="messages">
+    </ul>
+    <form id="chatForm" action="./" class="form-inline">
+        <input type="text" id="textInput" class="form-control" />
+        <input type="submit" id="submitButton" class="btn btn-default" value="Send" />
+    </form>
+</div>
+</body>
+<script>
+    var socket = io({transports:['websocket']});
+    socket.on('connect', function() {
+        console.log('connect');
+    });
+
+    socket.on('chatMessage', function(data) {
+        var msg = data['message'];
+        var nick = data['nick'];
+        var str = nick + ' : ' + msg;
+        // 채팅 메세지
+        $('#messages').append($('<li>').text(str));
+    });
+
+    $('#chatForm').submit(function() {
+        var text = $('#textInput').val();
+        socket.emit('chatInput', {message:text});
+
+        $('#textInput').val('');
+        return false; // refresh 방지
+    });
+</script>
+</html>
