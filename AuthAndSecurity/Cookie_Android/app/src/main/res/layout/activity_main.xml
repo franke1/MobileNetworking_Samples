@@ -6,59 +6,53 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context=".MainActivity">
-    
-    <RelativeLayout
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="200dp">
 
-        <EditText
-            android:id="@+id/serverAddress"
-            android:layout_marginRight="8dp"
-            android:layout_width='match_parent'
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="http://192.168.99.158:3000"
-            android:hint="address"/>
-    </RelativeLayout>
+            android:textSize="20sp"
+            android:text="Connection"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp" >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HttpUrlConnection"
-            android:id="@+id/urlConButton"
-            android:onClick="sendBasicRequest"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UrlConnection"
+                android:id="@+id/urlConnectButton"/>
 
-        <Button
-            android:id="@+id/volleyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/urlConButton"
-            android:layout_alignBaseline="@id/urlConButton"
-            android:text="Volley"
-            android:onClick="sendVolleyRequest"/>
+            <Button
+                android:id="@+id/volleyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Volley"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear Cookie"
-            android:layout_toRightOf="@id/volleyButton"
-            android:onClick="clearCookie"/>
-
+            <Button
+                android:id="@+id/clearButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/visitInfoView"
-            android:layout_below="@id/urlConButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="Visit Info" />
-    </RelativeLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="0.7"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
@@ -66,8 +60,8 @@
             android:textSize="20sp"
             android:text="WebView"/>
         <Button
+            android:id="@+id/webViewRequestButton"
             android:text="Send Request"
-            android:onClick="sendWebRequest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

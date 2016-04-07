@@ -37,11 +37,12 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
    public static final String TAG = "Cookie-Sample";
+   String serverAddress = "http://192.168.0.129:3000";
+
    RequestQueue requestQueue;
 
    private TextView visitInfoView;
    private WebView webview;
-   private EditText address;
 
    Handler handler = new Handler();
 
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
       visitInfoView = (TextView) findViewById(R.id.visitInfoView);
-      address = (EditText) findViewById(R.id.serverAddress);
 
       // cookie manager
       CookieManager manager = new CookieManager();
@@ -76,6 +76,37 @@ public class MainActivity extends AppCompatActivity {
          }
       };
       webview.setWebViewClient(client);
+
+      // HTTPUrLConnection
+      findViewById(R.id.urlConnectButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            CookieThread cookieThread = new CookieThread();
+            cookieThread.start();
+         }
+      });
+
+      findViewById(R.id.volleyButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            sendVolleyRequest();
+         }
+      });
+
+      findViewById(R.id.clearButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            clearCookie();
+         }
+      });
+
+      findViewById(R.id.webViewRequestButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            syncNativeCookieToWebView(serverAddress);
+            webview.loadUrl(serverAddress);
+         }
+      });
    }
 
    // 웹뷰의 쿠키를 네이티브 쿠키로 동기화
@@ -92,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
          URI uri = new URI(url);
 
          // 네이티브 쿠키 스토어에 쿠기 저장
-         CookieManager cookieManager = (CookieManager)CookieManager.getDefault();
+         CookieManager cookieManager = (CookieManager) CookieManager.getDefault();
          CookieStore store = cookieManager.getCookieStore();
 
-         for( int i = 0 ; i < cookies.length ; i++ ) {
+         for (int i = 0; i < cookies.length; i++) {
             List<HttpCookie> parsed = HttpCookie.parse(cookies[i]);
             HttpCookie cookie = parsed.get(0);
             cookie.setDomain(uri.getHost());
@@ -113,17 +144,16 @@ public class MainActivity extends AppCompatActivity {
    }
 
 
-
    // 네이티브 쿠키를 웹뷰의 쿠키로 동기화
    void syncNativeCookieToWebView(String url) {
       try {
-         CookieManager cookieManager = (CookieManager)CookieManager.getDefault();
+         CookieManager cookieManager = (CookieManager) CookieManager.getDefault();
          URI uri = new URI(url);
          List<HttpCookie> cookieList = cookieManager.getCookieStore().get(uri);
 
          String cookieStr = "";
          android.webkit.CookieManager webCookieManager = android.webkit.CookieManager.getInstance();
-         for ( int i = 0 ; i < cookieList.size() ; i++ ) {
+         for (int i = 0; i < cookieList.size(); i++) {
             HttpCookie cookie = cookieList.get(i);
             cookieStr += cookie.getName() + "=" + cookie.getValue() + "; ";
          }
@@ -136,24 +166,11 @@ public class MainActivity extends AppCompatActivity {
       }
    }
 
-   // 웹뷰로 로딩
-   public void sendWebRequest(View v) {
-      String urlStr = address.getText().toString();
-      syncNativeCookieToWebView(urlStr);
-      webview.loadUrl(urlStr);
-   }
-
-   // HttpUrlRequest를 이용한 요청
-   public void sendBasicRequest(View v) {
-      CookieThread cookieThread = new CookieThread();
-      cookieThread.start();
-   }
 
    // Volley를 이용한 요청
-   public void sendVolleyRequest(View v) {
-      String urlStr = address.getText().toString();
+   void sendVolleyRequest() {
       // 응답 메세지는 JSON 형태
-      JsonObjectRequest request = new JsonObjectRequest(urlStr, new Response.Listener<JSONObject>() {
+      JsonObjectRequest request = new JsonObjectRequest(serverAddress, new Response.Listener<JSONObject>() {
          @Override
          public void onResponse(JSONObject response) {
             try {
@@ -181,15 +198,14 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void run() {
          try {
-            String urlStr = address.getText().toString();
-            URL url = new URL(urlStr);
+            URL url = new URL(serverAddress);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // 응답 메세지의 쿠키를 콘솔에 출력
             String cookie = null;
             Map<String, List<String>> headers = conn.getHeaderFields();
-            for ( String key : headers.keySet() ) {
-               if ( "set-cookie".equalsIgnoreCase(key)) { // 주의 - statusLine의 key는 null
+            for (String key : headers.keySet()) {
+               if ("set-cookie".equalsIgnoreCase(key)) { // 주의 - statusLine의 key는 null
                   cookie = headers.get("set-cookie").toString();
                   Log.d(TAG, "Response Cookie : " + cookie);
                }
@@ -221,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                }
             });
 
-            showNativeCookies(urlStr);
+            showNativeCookies(serverAddress);
          } catch (Exception e) {
             Log.e(TAG, "Exception", e);
             e.printStackTrace();
@@ -230,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    // 쿠키 모두 지우기
-   public void clearCookie(View v) {
+   public void clearCookie() {
       CookieManager manager = (CookieManager) CookieManager.getDefault();
       manager.getCookieStore().removeAll();
 
@@ -248,17 +264,16 @@ public class MainActivity extends AppCompatActivity {
          URI uri = new URI(urlStr);
          Log.d(TAG, "URI : " + uri);
          List<URI> uriList = store.getURIs();
-         for(int i = 0 ; i < uriList.size() ; i++) {
+         for (int i = 0; i < uriList.size(); i++) {
             Log.d(TAG, "URI : " + uriList.get(i));
          }
 
          List<HttpCookie> cookies = store.get(uri);
-         for ( int i = 0 ; i < cookies.size() ; i++) {
+         for (int i = 0; i < cookies.size(); i++) {
             HttpCookie item = cookies.get(i);
             Log.d(TAG, "Cookie : " + item);
          }
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
          Log.e(TAG, "Exception", e);
       }
 
