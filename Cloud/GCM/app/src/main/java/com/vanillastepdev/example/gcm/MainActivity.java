@@ -56,8 +56,7 @@ public class MainActivity extends Activity {
       mQueue = Volley.newRequestQueue(this);
       handler = new Handler();
 
-      Button checkButton = (Button)findViewById(R.id.checkPlayServiceButton);
-      checkButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.checkPlayServiceButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             checkPlayService();
@@ -65,8 +64,7 @@ public class MainActivity extends Activity {
       });
 
       // 토큰 발급 버튼과 이벤트
-      Button requestTokenButton = (Button)findViewById(R.id.requestDeviceTokenButton);
-      requestTokenButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.requestDeviceTokenButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             // API19 에서 에러
@@ -75,9 +73,9 @@ public class MainActivity extends Activity {
          }
       });
 
-      Button deviceIDButton = (Button)findViewById(R.id.getDeviceIDButton);
+
       deviceIDLabel = (TextView)findViewById(R.id.deviceIdLabel);
-      deviceIDButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.getDeviceIDButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             resolveDeviceID();
@@ -85,17 +83,13 @@ public class MainActivity extends Activity {
       });
 
       // 토큰 등록 버튼과 이벤트
-      Button registTokenButton = (Button)findViewById(R.id.registTokenButton);
-      registTokenButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.registTokenButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             Log.d(TAG, "Register Device Token to App Server");
             registerToken();
          }
       });
-
-      TextView addressView = (TextView)findViewById(R.id.serverAddress);
-      addressView.setText("Server Address : " + serverAddress);
 
       showStoredToken();
    }
