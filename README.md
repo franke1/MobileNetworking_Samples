@@ -94,3 +94,43 @@ get | /movies/:movie_id | 영화 상세 정보 보기
 delete | /movies/:movie_id | 영화 정보 삭제. :movie_id는 영화 ID
 put | /movies/:movie_id | 영화 정보 수정. URLEncoded 방식. title, director, year, synopsis
 post | /movies/:movie_id | 리뷰 추가하기. URLEncoded 방식. review=MovieReview	
+
+
+
+# 인증
+
+## Cookie
+
+### 서버
+
+$ npm install
+
+$ node /Server/cookieServer.js
+
+### 안드로이드 샘플
+
+
+## LocalAuth
+
+### 서버
+
+/Server/AuthServer
+
+$ npm install
+
+$ node server.js
+
+웹 브라우저에서 확인 가능.
+
+메소드 | 경로 | 동작
+----|----|----
+get | / | 웹 페이지(웹 브라우저 접속)
+get | /talks | 글 목록 보기
+post | /talks | 글 작성하기. URLEncoded, talk=NewTalk
+post | /login | 로그인 ( username="user", password="1234" )
+delete | /logout | 로그아웃
+
+### 클라이언트
+
+안드로이드 : LocalAuth_Android
+

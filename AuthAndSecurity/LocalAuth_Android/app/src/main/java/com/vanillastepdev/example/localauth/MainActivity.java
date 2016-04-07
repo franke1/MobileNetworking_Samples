@@ -33,7 +33,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "LocalAuth-Sample";
-   static final String serverAddress = "http://192.168.0.15:3000";
+   static final String serverAddress = "http://192.168.0.129:3000";
 
    private RequestQueue mQueue;
    private ListView listView;
@@ -62,12 +62,8 @@ public class MainActivity extends AppCompatActivity {
       userPassword = (EditText) findViewById(R.id.userPassword);
       newTalk = (EditText)findViewById(R.id.newTalk);
 
-      TextView addressView = (TextView)findViewById(R.id.serverAddress);
-      addressView.setText("Server : " + serverAddress);
-
       // 로그인 버튼
-      Button loginButton = (Button)findViewById(R.id.loginButton);
-      loginButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
             login();
@@ -75,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
       });
 
       // 컨텐츠 다시 얻기
-      Button refreshButton = (Button)findViewById(R.id.refreshButton);
-      refreshButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.refreshButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
             refresh();
@@ -84,11 +79,17 @@ public class MainActivity extends AppCompatActivity {
       });
 
       // 새 글 쓰기 버튼
-      Button composeButton = (Button) findViewById(R.id.composeButton);
-      composeButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.composeButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
             composeNewTalk();
+         }
+      });
+
+      findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Toast.makeText(MainActivity.this, "아직 로그아웃 기능 지원되지 않음", Toast.LENGTH_SHORT).show();
          }
       });
 
