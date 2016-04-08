@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.navercorp.volleyextensions.volleyer.factory.DefaultNetworkResponseParserFactory;
 import com.navercorp.volleyextensions.volleyer.http.ContentTypes;
+import com.navercorp.volleyextensions.volleyer.multipart.StringPart;
 import com.navercorp.volleyextensions.volleyer.response.parser.IntegratedNetworkResponseParser;
 import com.navercorp.volleyextensions.volleyer.response.parser.NetworkResponseParser;
 import com.navercorp.volleyextensions.volleyer.response.parser.TypedNetworkResponseParser;
@@ -58,25 +59,53 @@ public class MainActivity extends AppCompatActivity {
             sendImageRequest();
          }
       });
+
+      findViewById(R.id.basicPostRequest).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            sendPostRequst();
+         }
+      });
       
       mQueue = Volley.newRequestQueue(this);
+   }
+
+   void sendPostRequst() {
+      String url = "http://192.168.0.20:3000/";
+      volleyer(mQueue)
+              .post(url)
+              .addHeader("Content-Type","application/x-www-form-urlencoded")
+              .withBody("title=Volley&director=VolleyExtension")
+              .withListener(new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+                    Log.d(TAG, "Basic Post Response : " + response);
+                 }
+              })
+              .withErrorListener(new Response.ErrorListener() {
+                 @Override
+                 public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "Error Response : " + error.getMessage());
+                 }
+              })
+              .execute();
    }
 
    void sendImageRequest() {
       String url = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Meisje_met_de_parel.jpg/600px-Meisje_met_de_parel.jpg";
 //      NetworkResponseParser parser = new IntegratedNetworkResponseParser().
 
-      NetworkResponseParser parser = new IntegratedNetworkResponseParser.Builder().addParser("image/*", new NetworkResponseParser() {
-         @Override
-         public <Bitmap> Response<Bitmap> parseNetworkResponse(NetworkResponse response, Class<Bitmap> clazz) {
-            Bitmap bitmap = (Bitmap) BitmapFactory.decodeByteArray(response.data, 0, response.data.length);
-            return (Response<Bitmap>) bitmap;
-         }
-      });
+//      NetworkResponseParser parser = new IntegratedNetworkResponseParser.Builder().addParser("image/*", new NetworkResponseParser() {
+//         @Override
+//         public <Bitmap> Response<Bitmap> parseNetworkResponse(NetworkResponse response, Class<Bitmap> clazz) {
+//            Bitmap bitmap = (Bitmap) BitmapFactory.decodeByteArray(response.data, 0, response.data.length);
+//            return (Response<Bitmap>) bitmap;
+//         }
+//      });
 
       volleyer(mQueue).get(url)
               .withTargetClass(Bitmap.class)
-              .withResponseParser(parser)
+//              .withResponseParser(parser)
               .withListener(new Response.Listener<Bitmap>() {
                  @Override
                  public void onResponse(Bitmap response) {

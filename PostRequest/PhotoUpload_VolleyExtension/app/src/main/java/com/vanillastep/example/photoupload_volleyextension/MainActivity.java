@@ -1,6 +1,8 @@
 package com.vanillastep.example.photoupload_volleyextension;
 
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,11 +19,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.URI;
+
 import static com.navercorp.volleyextensions.volleyer.Volleyer.*;
 
 public class MainActivity extends AppCompatActivity {
    private static final String TAG = "PhotoUpload-Sample";
-   private static final String serverAddress = "http://192.168.0.129:3001";
+   private static final String serverAddress = "http://192.168.0.30:3001";
 
    private RequestQueue mQueue;
    private EditText mTitle;
@@ -61,15 +69,32 @@ public class MainActivity extends AppCompatActivity {
    }
 
    void upload() {
-      volleyer(mQueue)
-              .post(serverAddress)
-              .
+
+      try {
+         AssetFileDescriptor afd = getAssets().openFd("poster.jpeg");
+         Log.d(TAG, "AssetFileDescriptor : " + afd.toString());
+         FileDescriptor fd = afd.getFileDescriptor();
+         Log.d(TAG, "FileDescriptor : " + fd.toString());
+         String assetPath = "file:///android_asset/poster.jpeg";
+
+         URI uri = new URI(assetPath);
+         Log.d(TAG, "URI : " + uri);
+         File f = new File(uri);
+
+         Log.d(TAG, "asset file exists : " +  f.exists() + " path : " + f.getAbsolutePath());
+
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+
+
+//      volleyer(mQueue)
+//              .post(serverAddress)
+//              .addHeader("Content-Type", "multipart/form-data")
+//              .addStringPart("title","그림 제목")
    }
 
    void selectImage() {
-      Drawable drawable = getResources().getDrawable(R.drawable.poster);
-      Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-      mImageView.setImageBitmap(bitmap);
    }
 
    void showList(View v) {
