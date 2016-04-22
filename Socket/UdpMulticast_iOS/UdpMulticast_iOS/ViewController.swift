@@ -11,8 +11,10 @@ import CocoaAsyncSocket
 
 class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocketDelegate {
    
-   let MULTICAST_PORT : UInt16 = 3000
-   let MULTICAST_ADDRESS = "224.0.0.114"
+   //  1024-49151
+   // range 239.0.0.0 to 239.255.255.255 as this is reserved for private use.
+   let MULTICAST_PORT : UInt16 = 49001
+   let MULTICAST_ADDRESS = "239.255.255.255"
    
    @IBOutlet var messageView : UITextView!
    @IBOutlet weak var inputTextField: UITextField!
@@ -20,7 +22,12 @@ class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocke
    @IBAction func sendMessage(sender: AnyObject) {
       let message = inputTextField.text
       if let data = message?.dataUsingEncoding(NSUTF8StringEncoding) {
-         socket2.sendData(data, toHost: MULTICAST_ADDRESS, port: MULTICAST_PORT, withTimeout: -1, tag: 0)
+         if socket2 != nil {
+            socket2.sendData(data, toHost: MULTICAST_ADDRESS, port: MULTICAST_PORT, withTimeout: -1, tag: 0)
+         }
+         if socket != nil {
+            socket.sendData(data, toHost: MULTICAST_ADDRESS, port: MULTICAST_PORT, withTimeout: -1, tag: 0)
+         }
       }
    }
    
@@ -28,7 +35,8 @@ class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocke
    var socket2 : GCDAsyncUdpSocket!
    
    override func viewWillAppear(animated: Bool) {
-      //readyUdpSocket()
+      messageView.text.appendContentsOf("\nMulticast packet receiving from \(MULTICAST_ADDRESS)")
+//      readyUdpSocket()
       readyGCDUdpSocket()
    }
    
@@ -38,6 +46,8 @@ class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocke
          try socket2.bindToPort(MULTICAST_PORT)
          try socket2.joinMulticastGroup(MULTICAST_ADDRESS)
          try socket2.beginReceiving()
+       
+         messageView.text.appendContentsOf("\nLocal Address : \(socket2.localHost())")
       }
       catch let exception {
          print("Socket Exception : \(exception)")
@@ -49,7 +59,7 @@ class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocke
    }
    
    func udpSocket(sock: GCDAsyncUdpSocket!, didNotConnect error: NSError!) {
-      
+      print("didNotConnect")
    }
    
    func udpSocketDidClose(sock: GCDAsyncUdpSocket!, withError error: NSError!) {
@@ -57,27 +67,29 @@ class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocke
    }
    
    func udpSocket(sock: GCDAsyncUdpSocket!, didConnectToAddress address: NSData!) {
-      
+      print("didConnectToAddress")
    }
    
    func udpSocket(sock: GCDAsyncUdpSocket!, didNotSendDataWithTag tag: Int, dueToError error: NSError!) {
-      
+      print("didNotSendDataWithTag")
    }
+   
    func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!, withFilterContext filterContext: AnyObject!) {
+      print("didReceiveData data length : \(data.length)")
+      
       if let message = String(data: data, encoding: NSUTF8StringEncoding) {
-         print("didReceiveData : \(message)")
-         messageView.text = "\(messageView.text)\n\(message)"
+         let sender = GCDAsyncUdpSocket.hostFromAddress(address)
+         messageView.text = "\(messageView.text)\n\(sender) >> \(message)"
       }
    }
-   
-   
    
    func readyUdpSocket() {
       socket = AsyncUdpSocket(delegate: self)
       do {
-         try socket.bindToPort(3000)
-         try socket.joinMulticastGroup("224.0.0.114")
+         try socket.bindToPort(MULTICAST_PORT)
+         try socket.joinMulticastGroup(MULTICAST_ADDRESS)
          socket.receiveWithTimeout(-1, tag: 0)
+         messageView.text.appendContentsOf("\nLocal Address : \(socket.connectedHost())")
       }
       catch let error as NSError {
          print("Socket Error : \(error)")
@@ -102,8 +114,9 @@ class ViewController: UIViewController, AsyncUdpSocketDelegate, GCDAsyncUdpSocke
    }
    
    func onUdpSocket(sock: AsyncUdpSocket!, didReceiveData data: NSData!, withTag tag: Int, fromHost host: String!, port: UInt16) -> Bool {
-      let message = String(data: data, encoding: NSUTF8StringEncoding)
-      print("didReceiveData : \(message)")
+      if let message = String(data: data, encoding: NSUTF8StringEncoding) {
+         messageView.text = "\(messageView.text)\n\(host) >> \(message)"
+      }
       return false
    }
 

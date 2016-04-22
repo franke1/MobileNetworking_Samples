@@ -1,29 +1,22 @@
 package com.example.wannabewize.udpmulticast_android;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.koushikdutta.async.AsyncDatagramSocket;
-import com.koushikdutta.async.http.AsyncSocketMiddleware;
-
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "UdpMulticast";
-    private static final String MULTICAST_ADDRESS = "224.0.0.114";
-    private static final int MULTICAST_PORT = 3000;
+    private static final String MULTICAST_ADDRESS = "239.255.255.255";
+    private static final int MULTICAST_PORT = 49001;
     private MulticastSocket mSocket;
     private MessageReceiveThread mReceiveThread;
     private Handler mHandler;
@@ -52,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mMessageView.setText("Multicast Example.\nMessage receiving from " + MULTICAST_ADDRESS);
         readyUdpSocket();
     }
 
@@ -60,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             mSocket = new MulticastSocket(MULTICAST_PORT);
             mSocket.joinGroup(InetAddress.getByName(MULTICAST_ADDRESS));
 
-            mReceiveThread = new MessageReceiveThread();
+            mReceiveThread = new MessageReceiveThread(mSocket);
             mReceiveThread.start();
 
         } catch (Exception e) {
@@ -88,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
 
     // 메세지 수신 용 쓰레드
     class MessageReceiveThread extends Thread {
+        private final MulticastSocket socket;
+
+        public MessageReceiveThread(MulticastSocket mSocket) {
+            this.socket = mSocket;
+        }
+
         @Override
         public void run() {
             try {
@@ -96,16 +96,17 @@ public class MainActivity extends AppCompatActivity {
                     byte[] buffer = new byte[65507];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     // 블록 코드다.
-                    mSocket.receive(packet);
+                    socket.receive(packet);
 
                     // 데이터그램 패킷에서
                     final String received = new String(packet.getData()).trim();
-                    Log.d(TAG, "Received : " + received);
+                    final String sender = packet.getAddress().getHostName();
+                    Log.d(TAG, "Received : " + received + " from " + sender);
 
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mMessageView.append(received + "\n");
+                            mMessageView.append("\n" + sender + " >> " + received);
                         }
                     });
                 }
