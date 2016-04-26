@@ -28,11 +28,10 @@ extension NSData {
          let addr6 = UnsafePointer<sockaddr_in6>(self.bytes).memory
          return "IP6 Address is not available"
       }
-
    }
 }
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ServiceManagerDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ServiceFindDelegate {
 
    @IBOutlet weak var tableView: UITableView!
    
@@ -80,11 +79,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
       
    }
    
-   var serviceManager : ServiceManager!
+   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+      if "SERVICE_CONNECT_SEGUE" == segue.identifier {
+         let cell = sender as! UITableViewCell
+         let index = tableView.indexPathForCell(cell)!
+         let service = serviceManager.serviceAtIndex(index.row)
+         
+         let serviceVC = segue.destinationViewController as! ServiceViewController
+         serviceVC.selectedService = service
+      }
+   }
+   
+   var serviceManager : ServiceFindManager!
    
    override func viewDidLoad() {
       super.viewDidLoad()
-      serviceManager = ServiceManager()
+      serviceManager = ServiceFindManager()
       serviceManager.delegate = self
    }
 
@@ -92,104 +102,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
       super.didReceiveMemoryWarning()
       // Dispose of any resources that can be recreated.
    }
-
-
 }
 
-let SERVICE_TYPE = "_http._tcp."
 
-protocol ServiceManagerDelegate {
-   func serviceInfoChanged(index : Int)
-   func serviceListResolved()
-}
-
-class ServiceManager : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate {
-
-   var serviceBrowser : NSNetServiceBrowser!
-   var isServiceSearching : Bool = false
-   var delegate : ServiceManagerDelegate!
-   
-   override init() {
-      super.init()
-      serviceBrowser = NSNetServiceBrowser()
-      serviceBrowser.delegate = self
-   }
-   
-   func findService() {
-      if isServiceSearching == false {
-         services.removeAll()
-         serviceBrowser.searchForServicesOfType(SERVICE_TYPE, inDomain: "local")
-      }
-   }
-   
-   func stopFindService() {
-      if isServiceSearching {
-         serviceBrowser.stop()
-      }
-   }
-   
-   func netServiceBrowserWillSearch(browser: NSNetServiceBrowser) {
-      isServiceSearching = true
-      print("netServiceBrowserWillSearch")
-   }
-   
-   func netServiceBrowserDidStopSearch(browser: NSNetServiceBrowser) {
-      isServiceSearching = false
-      print("netServiceBrowserDidStopSearch")
-   }
-   
-   func netServiceBrowser(browser: NSNetServiceBrowser, didNotSearch errorDict: [String : NSNumber]) {
-      print("didNotSearch")
-   }
-   
-   func netServiceBrowser(browser: NSNetServiceBrowser, didFindDomain domainString: String, moreComing: Bool) {
-      print("didFindDomain")
-   }
-   func netServiceBrowser(browser: NSNetServiceBrowser, didFindService service: NSNetService, moreComing: Bool) {
-      print("didFindService")
-      if services.indexOf(service) == nil {
-         services.append(service)
-      }
-      
-      if service.addresses?.count == 0 {
-         service.resolveWithTimeout(100)
-         service.delegate = self
-      }
-      
-      if moreComing == false {
-         browser.stop()
-         delegate.serviceListResolved()
-      }
-   }
-   func netServiceBrowser(browser: NSNetServiceBrowser, didRemoveDomain domainString: String, moreComing: Bool) {
-      print("didRemoveDomain")
-   }
-   func netServiceBrowser(browser: NSNetServiceBrowser, didRemoveService service: NSNetService, moreComing: Bool) {
-      print("didRemoveService")
-   }
-   
-   /*
-    *  NetServiceDeleagte
-    */
-   func netServiceDidResolveAddress(sender: NSNetService) {
-      print("netServiceDidResolveAddress")
-      if let index = services.indexOf(sender) {
-         print("service info chagned : \(index)")
-         delegate.serviceInfoChanged(index)
-      }
-   }
-   
-   func netServiceWillResolve(sender: NSNetService) {
-      print("netServiceWillResolve")
-   }
-   
-   var services = [NSNetService]()
-   func numberOfService() -> Int {
-      return services.count
-   }
-   
-   func serviceAtIndex(index : Int) -> NSNetService {
-      return services[index]
-   }
-}
 
