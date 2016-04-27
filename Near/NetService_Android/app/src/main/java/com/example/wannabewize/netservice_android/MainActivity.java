@@ -1,6 +1,7 @@
 package com.example.wannabewize.netservice_android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,10 +21,11 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceListActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String SERVICE_TYPE = "_http._tcp.";
     private static final String TAG = "NetService-Sample";
+    public static final String SERVICE_INTENT_NAME = "SERVICE_INFO"
 
     private List<NsdServiceInfo> serviceList = new ArrayList();
 
@@ -47,7 +50,7 @@ public class ServiceListActivity extends AppCompatActivity {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if ( view == null ) {
-                LayoutInflater inflator = (LayoutInflater) ServiceListActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflator = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
                 view = inflator.inflate(android.R.layout.simple_list_item_2, viewGroup, false);
             }
 
@@ -107,24 +110,56 @@ public class ServiceListActivity extends AppCompatActivity {
         public void onDiscoveryStarted(String s) {
             Log.d(TAG, "onDiscoveryStarted");
             serviceList.removeAll(serviceList);
-            Toast.makeText(ServiceListActivity.this, "Discovery Started", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Discovery Started", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onDiscoveryStopped(String s) {
             Log.d(TAG, "onDiscoveryStopped");
             isServiceDiscovering = false;
-            Toast.makeText(ServiceListActivity.this, "Discovery Stopped", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Discovery Stopped", Toast.LENGTH_SHORT).show();
+        }
+
+        NsdServiceInfo getServiceInfoWithName(String name) {
+            for (NsdServiceInfo service : serviceList) {
+                if ( service.getServiceName().equals(name)) {
+                    return service;
+                }
+            }
+            return null;
         }
 
         @Override
-        public void onServiceFound(NsdServiceInfo nsdServiceInfo) {
+        public void onServiceFound(final NsdServiceInfo nsdServiceInfo) {
             Log.d(TAG, "onServiceFound");
-            if ( serviceList.indexOf(nsdServiceInfo) == -1 ) {
+
+            NsdServiceInfo service = getServiceInfoWithName(nsdServiceInfo.getServiceName());
+            if ( service == null ) {
                 serviceList.add(nsdServiceInfo);
             }
+
+            // 주소 정보 얻어오기
             if ( nsdServiceInfo.getHost() == null ) {
-                mNsdManager.resolveService(nsdServiceInfo, mServiceResolveListner);
+                mNsdManager.resolveService(nsdServiceInfo, new NsdManager.ResolveListener() {
+                    @Override
+                    public void onResolveFailed(NsdServiceInfo info, int i) {
+                        Log.d(TAG, info.getServiceName() + " resolve failed");
+                    }
+
+                    @Override
+                    public void onServiceResolved(NsdServiceInfo info) {
+                        Log.d(TAG, info.getServiceName() + " resolve successful " + info.getHost());
+                        // 얻어온 주소를 서비스 정보에 설정
+                        nsdServiceInfo.setHost(info.getHost());
+                        nsdServiceInfo.setPort(info.getPort());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
             }
             mHandler.post(new Runnable() {
                 @Override
@@ -136,14 +171,17 @@ public class ServiceListActivity extends AppCompatActivity {
 
         @Override
         public void onServiceLost(NsdServiceInfo nsdServiceInfo) {
-            Log.d(TAG, "onServiceLost");
-            serviceList.remove(nsdServiceInfo);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.notifyDataSetChanged();
-                }
-            });
+            NsdServiceInfo service = getServiceInfoWithName(nsdServiceInfo.getServiceName());
+            Log.d(TAG, "onServiceLost : " + nsdServiceInfo.getServiceName());
+            if ( service != null ) {
+                serviceList.remove(nsdServiceInfo);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
     };
 
@@ -151,18 +189,30 @@ public class ServiceListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service_list);
+        setContentView(R.layout.activity_main);
 
         mNsdManager = (NsdManager)this.getSystemService(Context.NSD_SERVICE);
         mHandler = new Handler();
 
         ListView serviceListView = (ListView) findViewById(R.id.serviceListView);
         serviceListView.setAdapter(mAdapter);
+        serviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                NsdServiceInfo service = (NsdServiceInfo) adapterView.getAdapter().getItem(i);
+                Log.d(TAG, "Trying to Connect to Service : " + service.getServiceName());
+                Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
+                intent.putExtra(SERVICE_INTENT_NAME, service);
+                MainActivity.this.startActivity(intent);
+            }
+        });
 
         findViewById(R.id.newServiceButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 새 서비스 생성
+                Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
+                MainActivity.this.startActivity(intent);
             }
         });
 
