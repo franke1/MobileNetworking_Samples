@@ -23,9 +23,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SERVICE_TYPE = "_http._tcp.";
+    static final String SERVICE_TYPE = "_http._tcp.";
     private static final String TAG = "NetService-Sample";
-    public static final String SERVICE_INTENT_NAME = "SERVICE_INFO"
+    public static final String SERVICE_INTENT_NAME = "SERVICE_INFO";
 
     private List<NsdServiceInfo> serviceList = new ArrayList();
 
@@ -110,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
         public void onDiscoveryStarted(String s) {
             Log.d(TAG, "onDiscoveryStarted");
             serviceList.removeAll(serviceList);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
             Toast.makeText(MainActivity.this, "Discovery Started", Toast.LENGTH_SHORT).show();
         }
 
@@ -231,6 +237,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 서비스 검색 중지
+                if ( isServiceDiscovering ) {
+                    mNsdManager.stopServiceDiscovery(discoveryListener);
+                }
             }
         });
     }
