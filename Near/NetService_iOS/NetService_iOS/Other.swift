@@ -43,7 +43,7 @@ class Other : NSObject, NSStreamDelegate {
    }
    
    func sendMessage(message : String) -> Void {
-      if let data = message.dataUsingEncoding(NSUTF8StringEncoding) {
+      if let data = (message + "\n").dataUsingEncoding(NSUTF8StringEncoding) {
          let buf = UnsafePointer<UInt8>(data.bytes)
          outputStream.write(buf, maxLength: data.length)
       }
