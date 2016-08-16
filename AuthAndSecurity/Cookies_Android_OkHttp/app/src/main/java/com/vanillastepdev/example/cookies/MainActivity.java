@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        resultView = (TextView)findViewById(R.id.resultView);
+        handler = new Handler();
+
         CookieHandler cookieHandler = new CookieManager();
         JavaNetCookieJar cookieJar = new JavaNetCookieJar(cookieHandler);
         client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
@@ -39,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
                 new MyThread().start();
             }
         });
-
-        resultView = (TextView)findViewById(R.id.resultView);
-        handler = new Handler();
     }
 
     class MyThread extends Thread {
