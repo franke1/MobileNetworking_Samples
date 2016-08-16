@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "993759945957",
+    "firebase_url": "https://fir-example-edab6.firebaseio.com",
+    "project_id": "fir-example-edab6",
+    "storage_bucket": "fir-example-edab6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993759945957:android:29d2f380744ca1cd",
+        "android_client_info": {
+          "package_name": "com.vanillastepdev.example.cloudmessaging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993759945957-hrloee8jmkfikkn2d663t1nr2j355f4a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlPeNpEb7S7bYP_zw48AnYUAHJPfMuXJE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
