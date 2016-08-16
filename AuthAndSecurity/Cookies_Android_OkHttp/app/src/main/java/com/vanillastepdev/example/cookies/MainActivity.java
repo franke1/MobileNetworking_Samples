@@ -7,10 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
