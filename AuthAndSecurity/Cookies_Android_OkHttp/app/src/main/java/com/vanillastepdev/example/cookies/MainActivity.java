@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         resultView = (TextView)findViewById(R.id.resultView);
         handler = new Handler();
 
+        // For Persistent Cookie - https://github.com/franmontiel/PersistentCookieJar
         CookieHandler cookieHandler = new CookieManager();
         JavaNetCookieJar cookieJar = new JavaNetCookieJar(cookieHandler);
         client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
