@@ -34,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.showImageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String urlStr = "http://lorempixel.com/720/1080/cats/";
-                new NetworkTask().execute(urlStr);
+                Log.d(TAG, "Started downloading");
+                String catImage = "http://lorempixel.com/720/1080/cats/"; // Too slow
+                String screamImage = " http://www.ibiblio.org/wm/paint/auth/munch/munch.scream.jpg";
+                new NetworkTask().execute(screamImage);
             }
         });
 
