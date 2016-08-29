@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONObject;
 
@@ -24,8 +26,10 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CloudMessage-Example";
-    private static final String SERVER_ADDRESS = "http://192.168.10.161:3000";
+    private static final String SERVER_ADDRESS = "http://192.168.0.100:3000";
     private static final String REGIST_DEVICE_URL = SERVER_ADDRESS + "/regist";
+    private static final String TOPIC = "NEWS";
+    private static final String PREFERENCE_SUBSCRIBE_KEY = "PREFERENCE_SUBSCRIBE";
 
     private TextView registrationToken;
     private TextView deviceIdLabel;
@@ -83,6 +87,43 @@ public class MainActivity extends AppCompatActivity {
                     new TokenRegistThread().start();
                 } else {
                     Toast.makeText(MainActivity.this, "토큰 AndroidID 발급 필요", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // 토픽 구독
+        findViewById(R.id.subscribeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 구독 여부를 확인
+                SharedPreferences preferences = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                Boolean isSubscribe = preferences.getBoolean(PREFERENCE_SUBSCRIBE_KEY, false);
+                if ( isSubscribe ) {
+                    Toast.makeText(MainActivity.this, "이미 구독중입니다.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // 구독. 구독 상황을 기록
+                    FirebaseMessaging.getInstance().subscribeToTopic(TOPIC);
+                    Toast.makeText(MainActivity.this, "NEWS 토픽을 구독합니다.", Toast.LENGTH_SHORT).show();
+                    preferences.edit().putBoolean(PREFERENCE_SUBSCRIBE_KEY, true).commit();
+                }
+
+            }
+        });
+
+        findViewById(R.id.unsubscribeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 구독 여부를 확인
+                SharedPreferences preferences = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                Boolean isSubscribe = preferences.getBoolean(PREFERENCE_SUBSCRIBE_KEY, false);
+                if ( isSubscribe ) {
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(TOPIC);
+                    Toast.makeText(MainActivity.this, "NEWS 토픽 구독을 해지합니다.", Toast.LENGTH_SHORT).show();
+                    preferences.edit().putBoolean(PREFERENCE_SUBSCRIBE_KEY, false).commit();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "구독 중이지 않습니다", Toast.LENGTH_SHORT).show();
                 }
             }
         });

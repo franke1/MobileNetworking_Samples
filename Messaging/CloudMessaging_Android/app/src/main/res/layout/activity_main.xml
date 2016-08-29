@@ -11,12 +11,6 @@
     tools:context="com.vanillastepdev.example.cloudmessaging.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Cloud Message Example App!" />
-
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -47,6 +41,29 @@
         android:id="@+id/registrationToken"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="6dp"
+        android:textSize="20sp"
+        android:text="토픽 구독"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/subscribeButton"
+            android:text="뉴스 구독"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/unsubscribeButton"
+            android:text="뉴스 해지"/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
