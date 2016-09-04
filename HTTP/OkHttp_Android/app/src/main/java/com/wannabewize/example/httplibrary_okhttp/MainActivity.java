@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -81,8 +82,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            // 백그라운드 동작 완료 : 메인 쓰레드에서 실행
-            imageView.setImageBitmap(bitmap);
+            if ( bitmap != null ) {
+                // 백그라운드 동작 완료 : 메인 쓰레드에서 실행
+                imageView.setImageBitmap(bitmap);
+            }
+            else {
+                Toast.makeText(MainActivity.this, "에러 발생", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
