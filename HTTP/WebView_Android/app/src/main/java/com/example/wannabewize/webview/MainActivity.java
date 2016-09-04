@@ -29,19 +29,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 //super.onReceivedError(view, errorCode, description, failingUrl);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Random random = new Random();
-                int r = random.nextInt(10);
-                if ( r > 3 ) {
-                    return true;
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "로딩 금지 불행 당첨!", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+                Log.d(TAG, "Error(" + errorCode + ") desc : " + description);
+                Toast.makeText(MainActivity.this, "Error : " + description, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -54,9 +43,16 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView.loadUrl("http://google.com");
         mEditText = (EditText)findViewById(R.id.editText);
+
+        findViewById(R.id.goButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                go();
+            }
+        });
     }
 
-    public void go(View v) {
+    public void go() {
         String url = mEditText.getText().toString();
         Log.d(TAG, "load url : " + url);
         mWebView.loadUrl(url);
