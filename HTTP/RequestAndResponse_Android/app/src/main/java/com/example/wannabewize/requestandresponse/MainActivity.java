@@ -1,5 +1,6 @@
 package com.example.wannabewize.requestandresponse;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -35,10 +36,84 @@ public class MainActivity extends AppCompatActivity {
 
       mEditText = (EditText) findViewById(R.id.editText);
       mTextView = (TextView) findViewById(R.id.textView);
+
+      findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+//            new SendRequestThread().start();
+            new NetworkTask().execute();
+         }
+      });
    }
 
-   public void sendRequest(View v) {
-      new SendRequestThread().start();
+   class NetworkTask extends AsyncTask<Void, Void, String> {
+      private String urlStr;
+
+      @Override
+      protected void onPreExecute() {
+         urlStr = mEditText.getText().toString();
+
+      }
+
+      @Override
+      protected String doInBackground(Void... params) {
+         try {
+            // 연결 생성
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            // 화면 출력을 위한 스트링 버퍼
+            StringBuffer resBuffer = new StringBuffer("== Response ==\n");
+
+            int code = conn.getResponseCode();
+            String message = conn.getResponseMessage();
+            resBuffer.append("Status Code : " + code + "\n");
+            resBuffer.append("Message : " + code + "\n\n");
+
+            // 응답 헤더 항목 얻어오기
+            resBuffer.append(" == Header ==\n");
+
+
+            Map<String, List<String>> requestProperties = conn.getHeaderFields();
+            Log.d(TAG, "Header Fields : " + requestProperties.size());
+
+            for (String key : requestProperties.keySet()) {
+               Log.d(TAG, "Header Key : " + key);
+               String value = requestProperties.get(key).toString();
+               resBuffer.append(key + " = " + value + "\n");
+            }
+
+            // 컨탠츠 출력
+            resBuffer.append("\n== Content ==\n");
+            String contentType = conn.getContentType();
+            // 글자 기반이면 출력
+            if (contentType.startsWith("text")) {
+               // 인풋 스트림 얻기
+               InputStream is = (InputStream) conn.getContent();
+               BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+               String line;
+               while ((line = reader.readLine()) != null) {
+                  resBuffer.append(line);
+               }
+
+               String content = String.valueOf(conn.getContent());
+               resBuffer.append(content);
+            }
+
+            return resBuffer.toString();
+         } catch (Exception e) {
+            Log.e(TAG, "Exception", e);
+            e.printStackTrace();
+         }
+         return null;
+      }
+
+      @Override
+      protected void onPostExecute(String s) {
+         if ( s != null ) {
+            mTextView.setText(s);
+         }
+      }
    }
 
    class SendRequestThread extends Thread {
