@@ -8,17 +8,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import java.net.InetAddress;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
    // 상태 변경 모니터링
    private TextView stateChangeLog;
    private StateChagneMonitor stateChagneMornitor;
-   private TextView reachabilityResult;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
       setContentView(R.layout.activity_main);
 
       infoText = (TextView) findViewById(R.id.infoText);
+
+      findViewById(R.id.networkInfoButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            showNetworkInfo();
+         }
+      });
 
       wifiSwitch = (Switch) findViewById(R.id.wifiSwitch);
       wifiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -45,20 +46,10 @@ public class MainActivity extends AppCompatActivity {
          }
       });
       stateChangeLog = (TextView) findViewById(R.id.stateChangeLog);
-      reachabilityResult = (TextView)findViewById(R.id.reachabilityResult);
    }
 
-   private Handler handler = new Handler() {
-      @Override
-      public void handleMessage(Message msg) {
-         if ( msg.what == 1 ) {
-            String str = (String) msg.obj;
-            reachabilityResult.setText(str);
-         }
-      }
-   };
 
-   public void showNetworkInfo(View v) {
+   private void showNetworkInfo() {
       String infoStr = null;
 
       ConnectivityManager service = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -80,54 +71,6 @@ public class MainActivity extends AppCompatActivity {
       infoText.setText(infoStr);
    }
 
-   public void checkReachability(View v) {
-      EditText editText = (EditText) findViewById(R.id.address);
-      String address = editText.getText().toString();
-      reachabilityResult.setText("연결 테스트 중");
-      new ReachableTestThread(address).start();
-   }
-
-   class ReachableTestThread extends Thread {
-      String host;
-      ReachableTestThread(String host) {
-         this.host = host;
-      }
-      @Override
-      public void run() {
-         String result = "연결 테스트 실패";
-         try {
-
-            InetAddress addresses[] = InetAddress.getAllByName(host);
-            for ( InetAddress address : addresses ) {
-               if ( address.isReachable(10 * 1000) ) {
-                  Log.d(TAG, "Success : " + address.getHostAddress());
-                  result = "연결 테스트 성공";
-                  break;
-               }
-               else {
-                  Log.d(TAG, "연결 테스트 실패 : " + address.getHostAddress());
-               }
-            }
-
-            /*
-            // 거의 동작 안함
-            InetAddress inetAddress = InetAddress.getByName(host);
-            boolean ret = inetAddress.isReachable(30 * 1000); // 30초 동안 확인
-            if ( ret ) {
-               result = "연결 테스트 성공";
-            }
-            */
-         } catch (Exception e) {
-            Log.e(TAG, "Exception", e);
-            result = "연결 테스트 에러 " + e.getLocalizedMessage();
-         }
-
-         Message msg = new Message();
-         msg.what = 1;
-         msg.obj = result;
-         handler.sendMessage(msg);
-      }
-   }
 
    void updateWifiSwitch() {
       // Wifi 상태 반영하기
