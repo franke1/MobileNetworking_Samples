@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.vanillastepdev.imageloader_glide.R.layout.activity_main);
 
-        mImageView = (ImageView)findViewById(com.vanillastepdev.imageloader_glide.R.id.imageView);
+        mImageView = (ImageView) findViewById(R.id.imageView);
 
-        findViewById(com.vanillastepdev.imageloader_glide.R.id.loadImageButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.loadImageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mImageView.setImageBitmap(null);
@@ -39,14 +39,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(com.vanillastepdev.imageloader_glide.R.id.loadImageButton2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ImageLoadingTask(image).execute();
-            }
-        });
 
-        findViewById(com.vanillastepdev.imageloader_glide.R.id.clearCacheButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.clearCacheButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 이미지 로더 제거
@@ -66,39 +60,5 @@ public class MainActivity extends AppCompatActivity {
                 }).start();
             }
         });
-    }
-
-    class ImageLoadingTask extends AsyncTask<Void, Void, Bitmap> {
-        String imageUrl;
-        ImageLoadingTask(String image) {
-            imageUrl = image;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mImageView.setImageBitmap(null);
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                InputStream is = (InputStream) conn.getContent();
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                return bitmap;
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error : " + e.getMessage());
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            mImageView.setImageBitmap(bitmap);
-        }
     }
 }
