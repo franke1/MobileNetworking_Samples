@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.net.URI;
 
+import static com.navercorp.volleyextensions.volleyer.Volleyer.volleyer;
+
 public class MainActivity extends AppCompatActivity {
    private static final String TAG = "PhotoUpload-Sample";
    private static final String serverAddress = "http://192.168.0.30:3001";
@@ -61,6 +63,15 @@ public class MainActivity extends AppCompatActivity {
    void upload() {
 
       try {
+         volleyer(mQueue)
+                 .post(serverAddress)
+                 .addStringPart("title", title)
+                 .addFilePart("poster", image)
+                 .withListener(listner)
+                 .withErrorListener(errorListener)
+                 .execute()
+
+
          AssetFileDescriptor afd = getAssets().openFd("poster.jpeg");
          Log.d(TAG, "AssetFileDescriptor : " + afd.toString());
          FileDescriptor fd = afd.getFileDescriptor();
