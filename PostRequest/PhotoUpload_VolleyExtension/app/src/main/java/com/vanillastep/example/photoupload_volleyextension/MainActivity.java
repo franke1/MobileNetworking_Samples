@@ -2,30 +2,20 @@ package com.vanillastep.example.photoupload_volleyextension;
 
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.net.URI;
-
-import static com.navercorp.volleyextensions.volleyer.Volleyer.*;
 
 public class MainActivity extends AppCompatActivity {
    private static final String TAG = "PhotoUpload-Sample";

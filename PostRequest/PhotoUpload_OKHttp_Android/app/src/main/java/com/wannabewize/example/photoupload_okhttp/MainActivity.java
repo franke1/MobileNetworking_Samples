@@ -131,10 +131,13 @@ public class MainActivity extends AppCompatActivity {
 
                 MultipartBody body = new MultipartBody.Builder()
                         .addFormDataPart("title", title)
-                        .addFormDataPart("poster", fileName, imageBody).build();
+                        .addFormDataPart("poster", fileName, imageBody)
+                        .build();
+
                 Request request = new Request.Builder()
                         .url(SERVER_ADDRESS)
-                        .post(body).build();
+                        .post(body)
+                        .build();
                 Response response = mHttpClient.newCall(request).execute();
                 return response.isSuccessful();
             } catch (Exception e) {
