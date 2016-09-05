@@ -8,7 +8,7 @@ TAcademy - MobileNetworking Course Sample Codes
 - Basic/AsyncTask_Android : AsyncTask 사용 예제
 - Basic/NetworkInfo_Android : 네트워크 환경 정보 얻기 예제
 
-# HTTP 예제
+# HTTP 통신
 
 - HTTP/RequestAndResponse : 요청과 응답 메세지 예제
 - HTTP/AsyncTask : 이미지 요청 - 응답
@@ -25,12 +25,15 @@ TAcademy - MobileNetworking Course Sample Codes
 
 ## 이미지 로딩
 
--  HTTP/ImageLoader_Glide_Android : Glide 이미지 로더 라이브러리
+- HTTP/ImageLoader_AsyncTask_Android : AsyncTask로 구현한 이미지 로딩, 캐시
+- HTTP/ImageLoader_Volley_Android : Volley 이미지 로더 라이브러리
+- HTTP/ImageLoader_Glide_Android : Glide 이미지 로더 라이브러리
 
-### Android
+## 이미지 목록과 로딩
 
-- ImageLoader_AsyncTask : AsyncTask로 구현
-- ImageLoader_Volley : Volley로 구현
+- HTTP/ImageList_AsyncTask_Android : AsyncTask로 작성한 목록 형태의 이미지
+- HTTP/ImageList_Volley_Android : Volley 로 작성한 목록 형태의 이미지
+- HTTP/ImageList_Glide_Android : Glide 로 작성한 목록 형태의 이미지
 
 ## HTTP 응답 에러 처리
 
@@ -54,9 +57,6 @@ $ npm install
 
 $ node Server/errorServer.js
 
-### Android
-
-### iOS
 
 
 # HTTP POST 요청
@@ -82,6 +82,9 @@ $ node Server/movieListServer.js
 ### Android
 
 - BasicPost_Android : HttpURLConnection 으로 구현한 예제
+- BasicPost_Volley_Android : Volley로 구현한 예제
+- BasicPost_OkHttp_Android : OkHttp 로 구현한 예제
+
 
 ## Multipart 방식 
 
@@ -98,6 +101,9 @@ $ node Server/imageUploadServer.js
 
 ### Android
 
+- PostRequest/PhotoUpload_Android : HttpUrlConnection을 이용한 이미지 업로드
+- PostRequest/PhotoUpload_Volley : Volley을 이용한 이미지 업로드
+- PostRequest/PhotoUpload_OkHttp_Android : OkHttp 이용한 이미지 업로드
 
 # XML/JSON
 
