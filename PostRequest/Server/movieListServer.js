@@ -18,7 +18,9 @@ var movieList = [{title:'인터스텔라', director : '크리스토퍼 놀란'}]
 function handlePostRequest(req, res) {
    var title = req.body.title;
    var director = req.body.director;
+   console.log('content-type : ', req.headers['content-type']);
    if ( !title || !director ) {
+      console.log('title : ', title, 'director : ', director);
       res.sendStatus(400);
    }   
    else {
@@ -33,7 +35,7 @@ function showNewMovieForm(req, res) {
    
    var body = '<html><head><meta charset="utf-8"></head><body>'
    body += '<h3>새 영화 입력</h3>';   
- 	body += '<form method="post" action=".">';
+ 	 body += '<form method="post" action=".">';
    body += '<div><label>영화 제목</label><input type="text" placeholder="영화제목" name="title"></div>';
    body += '<div><label>감독</label><input type="text" name="director" placeholder="감독"></div>';
    body += '<div><input type="submit" value="upload"></div>';

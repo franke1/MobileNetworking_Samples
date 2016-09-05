@@ -1,13 +1,12 @@
 package com.vanillastep.example.basicpost_volley;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -20,6 +19,8 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.navercorp.volleyextensions.volleyer.Volleyer.volleyer;
 
 public class MainActivity extends AppCompatActivity {
    static private final String TAG = "SimplePOST-Sample";
@@ -44,10 +45,38 @@ public class MainActivity extends AppCompatActivity {
       findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            sendRequest();
+//            sendRequest();
 //            sendRequest2();
+            sendRequest3();
          }
       });
+   }
+
+   // Volleyer를 사용
+   private void sendRequest3() {
+      String title = mTitle.getText().toString();
+      String director = mDirector.getText().toString();
+
+      String body = "title=" + title + "&director=" + director;
+
+      volleyer(queue)
+              .post(serverAddress)
+              .withBody(body)
+              .withListener(new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+                     Log.d(TAG, "Success");
+                    mWebView.loadUrl(serverAddress);
+                 }
+              })
+              .withErrorListener(new Response.ErrorListener() {
+                 @Override
+                 public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(MainActivity.this, "Error : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error : " + error.getMessage(), error);
+                 }
+              })
+              .execute();
    }
 
    @Override
