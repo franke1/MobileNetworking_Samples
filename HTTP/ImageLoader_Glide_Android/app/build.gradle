@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.vanillastepdev.imageloader_glide_android"
+        applicationId "com.vanillastepdev.imageloader_glide"
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1

@@ -1,19 +1,13 @@
 package com.vanillastepdev.imageloader_glide;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,16 +18,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.vanillastepdev.imageloader_glide.R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         mImageView = (ImageView) findViewById(R.id.imageView);
 
         findViewById(R.id.loadImageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 이미지 로더 제거
+                //Glide.clear(mImageView);
                 mImageView.setImageBitmap(null);
+
                 Glide.with(MainActivity.this).load(image)
-//                        .crossFade(3)
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL) // 모든 이미지 캐시
+                        .diskCacheStrategy(DiskCacheStrategy.NONE) // 캐시 안함
+                        .crossFade(1) // Animation
 //                        .sizeMultiplier((float)0.5)
                         .into(mImageView);
             }
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 Glide.clear(mImageView);
 
                 final Glide glide = Glide.get(MainActivity.this);
+                // 메모리 캐시 비우기
                 glide.clearMemory();
 
                 // 디스크 캐쉬 비우기는 멀티 쓰레드에서
