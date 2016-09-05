@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
             "http://totallyhistory.com/wp-content/uploads/2011/11/Magritte_The-Son-Of-Man-small.jpg",
             "http://totallyhistory.com/wp-content/uploads/2011/11/Great_Wave_off_Kanagawa-small.jpg"};
 
-    RequestQueue queue;
-    public ImageLoader imageLoader;
+    private RequestQueue mQueue;
+    private ImageLoader mImageLoader;
 
 
     @Override
@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView)findViewById(R.id.listView);
         listView.setAdapter(adapter);
 
-        queue = Volley.newRequestQueue(this);
+        mQueue = Volley.newRequestQueue(this);
 
         PaintImageCache imageCache = new PaintImageCache(5 * 1024 * 1024); // 5mb
-        imageLoader = new ImageLoader(queue, imageCache);
+        mImageLoader = new ImageLoader(mQueue, imageCache);
     }
 
     BaseAdapter adapter = new BaseAdapter() {
@@ -83,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             NetworkImageView imageView = (NetworkImageView) view.findViewById(R.id.imageView);
-            // TODO : 리스트에 이미지 로딩
             String url = (String) getItem(i);
-            imageView.setImageUrl(url, imageLoader);
+            // 기존 이미지와 다르면 이미지 제거
+            if ( url != imageView.getImageURL())
+                imageView.setImageUrl(null, null);
+
+            imageView.setImageUrl(url, mImageLoader);
 
             return view;
         }
