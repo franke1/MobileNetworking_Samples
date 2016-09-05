@@ -1,4 +1,4 @@
-package com.vanillastepdev.imageloader_glide_android;
+package com.vanillastepdev.imageloader_glide;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,15 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.ViewPropertyAnimation;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(com.vanillastepdev.imageloader_glide.R.layout.activity_main);
 
-        mImageView = (ImageView)findViewById(R.id.imageView);
+        mImageView = (ImageView)findViewById(com.vanillastepdev.imageloader_glide.R.id.imageView);
 
-        findViewById(R.id.loadImageButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(com.vanillastepdev.imageloader_glide.R.id.loadImageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mImageView.setImageBitmap(null);
@@ -44,14 +39,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.loadImageButton2).setOnClickListener(new View.OnClickListener() {
+        findViewById(com.vanillastepdev.imageloader_glide.R.id.loadImageButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new ImageLoadingTask(image).execute();
             }
         });
 
-        findViewById(R.id.clearCacheButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(com.vanillastepdev.imageloader_glide.R.id.clearCacheButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 이미지 로더 제거

@@ -1,4 +1,4 @@
-package com.vanillastepdev.imageloader_glide_android;
+package com.vanillastepdev.imagelist_asynctask;
 
 import org.junit.Test;
 

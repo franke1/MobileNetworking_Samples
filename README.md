@@ -23,7 +23,9 @@ TAcademy - MobileNetworking Course Sample Codes
 
 - HTTP/WebView_Android : 웹뷰
 
-## 목록에서의 이미지 로딩
+## 이미지 로딩
+
+-  HTTP/ImageLoader_Glide_Android : Glide 이미지 로더 라이브러리
 
 ### Android
 
