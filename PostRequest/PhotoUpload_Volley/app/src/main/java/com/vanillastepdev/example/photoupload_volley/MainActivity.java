@@ -29,7 +29,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "PhotoUpload-Sample";
-   private static final String serverAddress = "http://192.168.0.129:3001";
+   private static final String serverAddress = "http://192.168.0.45:3001";
 
    // 제목
    private EditText mTitle;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
          @Override
          public void onResponse(String response) {
             Log.d(TAG, "Response : " + response);
-            Toast.makeText(MainActivity.this, "Upload Succes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Upload Success", Toast.LENGTH_SHORT).show();
             mImageView.setImageBitmap(null);
             mTitle.setText("");
          }
@@ -138,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
          stringUploads.put(param,content);
       }
 
-      String boundary = "XXXYYYZZZ";
-      String lineEnd = "\r\n";
+      final String boundary = "XXXYYYZZZ";
+      final String lineEnd = "\r\n";
 
       @Override
       public byte[] getBody() throws AuthFailureError {
