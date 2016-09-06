@@ -79,7 +79,7 @@ $ npm install
 
 $ node Server/movieListServer.js
 
-### Android
+### Android 예제
 
 - BasicPost_Android : HttpURLConnection 으로 구현한 예제
 - BasicPost_Volley_Android : Volley로 구현한 예제
@@ -107,10 +107,33 @@ $ node Server/imageUploadServer.js
 
 # XML/JSON
 
+## XML/JSON 응답 파싱
+
 - XmlJson/TopSongs_XML_SAX_Android : SAX파서를 이용한 XML 파싱 예제
 - XmlJson/TopSongs_XML_Dom_Android : DOM 파서를 이용한 XML 파싱 예제
 - XmlJson/TopSongs_JSON_Android : 기본 JSON 파서를 이용한 JSON 파싱 예제
-- XmlJson/TopSongs_JSON_Volley_Android : Volley의 JSON 요청을 이용한 JSON 파싱 예제
+- XmlJson/TopSongs_JSON_Volley_Android : Volley를 이용한 JSON 파싱 예제
+
+## JSON 요청
+
+JSON 요청
+
+### Server
+
+- XmlJson/Server/server
+
+npm install
+node server.js
+
+- Method : POST
+- Url : /upload
+- 요청 바디 : { "data" : { "name" : "IU" } }
+- 응답 바디 : { "msg" : "success", "data" : { "name" : "IU" } }
+
+### Android
+
+- XmlJson/JsonRequest_Volley_Android : Volley를 이용한 JSON 요청
+- XmlJson/JsonRequest_OkHttp_Android : Volley를 이용한 JSON 요청
 
 # REST 서비스
 
@@ -120,10 +143,9 @@ $ node Server/imageUploadServer.js
 ----|----|----
 get | /movies | 영화 목록 JSON
 post | /movies | 영화 정보 추가하기. 인코딩 : URLEncoded 방식, title, director, year, synopsis
-get | /movies/:movie_id | 영화 상세 정보 보기
-delete | /movies/:movie_id | 영화 정보 삭제. :movie_id는 영화 ID
-put | /movies/:movie_id | 영화 정보 수정. URLEncoded 방식. title, director, year, synopsis
-post | /movies/:movie_id | 리뷰 추가하기. URLEncoded 방식. review=MovieReview	
+get | /movies/ID | 영화 상세 정보 보기
+delete | /movies/ID | 영화 정보 삭제. id는 영화 ID
+put | /movies/ID | 영화 정보 수정. URLEncoded/JSON 방식. title, director, year, synopsis
 
 
 # 인증
