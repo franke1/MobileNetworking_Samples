@@ -27,7 +27,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
    static private final String TAG = "SimplePOST-Sample";
-   static private final String serverAddress = "http://192.168.0.88:3000";
+   static private final String serverAddress = "http://192.168.0.10:3000";
 
    private EditText mTitle;
    private EditText mDirector;
@@ -45,17 +45,19 @@ public class MainActivity extends AppCompatActivity {
       // 웹뷰로 목록 출력
       // TODO: 에러 처리 필요
       mWebView.setWebViewClient(new WebViewClient());
+
+      findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            new NetworkThread().start();
+         }
+      });
    }
 
    @Override
    protected void onResume() {
       super.onResume();
       refreshList();
-   }
-
-   // 요청 보내기
-   public void sendRequest(View v) {
-      new NetworkThread().start();
    }
 
    // 웹뷰에 목록 출력
