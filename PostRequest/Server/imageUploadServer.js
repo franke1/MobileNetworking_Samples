@@ -30,6 +30,8 @@ function handlePostReqeust(req, res) {
 	form.uploadDir = uploadDir;	
 	form.keepExtensions = true;
 
+  console.log('content-type : ', req.headers['content-type']);
+
 	form.parse(req, function(err, fields, files) {
       if ( err ) {
          console.error('Form parsing Error', err);
@@ -67,7 +69,7 @@ function showNewMovieForm(req, res) {
    
    var body = '<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>'
    body += '<h3>새 영화 입력</h3>';   
- 	body += '<form method="post" action="." enctype="multipart/form-data">';
+ 	 body += '<form method="post" action="." enctype="multipart/form-data">';
    body += '<div><label>영화 제목</label><input type="text" placeholder="영화제목" name="title"></div>';
    body += '<div><label>포스터</label><input type="file" name="poster"></div>'
    body += '<div><input type="submit" value="upload"></div>';
