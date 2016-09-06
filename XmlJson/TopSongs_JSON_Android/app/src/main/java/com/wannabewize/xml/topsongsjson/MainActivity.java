@@ -8,15 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -26,7 +23,30 @@ public class MainActivity extends AppCompatActivity {
     private String urlStr = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=25/json";
     private static final String TAG = "JSONParing";
 
-    Thread jsonParsing = new Thread() {
+    private ListView listView;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> songList = new ArrayList<>();
+
+    private Handler handler = new Handler();
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        listView = (ListView) findViewById(R.id.songList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+        listView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        parseTopSongs();
+    }
+
+    class JsonParser extends Thread {
         @Override
         public void run() {
             try {
@@ -58,36 +78,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-            } catch (MalformedURLException e) {
-                Log.e(TAG, "MalformedURLException" , e);
-                e.printStackTrace();
-            } catch (IOException e) {
-                Log.e(TAG, "IOException" , e);
-                e.printStackTrace();
-            } catch (JSONException e) {
-                Log.e(TAG, "JSONException" , e);
+            } catch (Exception e) {
+                Log.e(TAG, "Exception" , e);
                 e.printStackTrace();
             }
         }
     };
 
-    private ListView listView;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> songList = new ArrayList<>();
-
-    private Handler handler = new Handler();
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        jsonParsing.start();
-
-        listView = (ListView) findViewById(R.id.songList);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
-        listView.setAdapter(adapter);
-
+    private void parseTopSongs() {
+        songList.clear();
+        new JsonParser().start();
     }
 }
