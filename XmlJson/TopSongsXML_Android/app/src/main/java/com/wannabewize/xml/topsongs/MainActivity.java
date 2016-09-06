@@ -3,6 +3,7 @@ package com.wannabewize.xml.topsongs;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -22,7 +23,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     static private String TAG = "SAXParsing";
 
@@ -45,8 +46,7 @@ public class MainActivity extends ActionBarActivity {
         parseThread.start();
     }
 
-    private String urlStr = "http://ax.itunes.apple.com/WebObjects/MZStoreServices" +
-            ".woa/ws/RSS/topsongs/limit=25/xml";
+    private String urlStr = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=25/xml";
 
     // XML 파싱 쓰레드
     private Thread parseThread = new Thread() {
