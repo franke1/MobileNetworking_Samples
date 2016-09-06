@@ -1,26 +1,25 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
+const express = require('express');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
-var app = express();
+const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 // 정적 파일 처리
 app.use(express.static(__dirname + '/images'));
+
 
 // Logging
 app.use(morgan('dev'));
 
 app.get('/movies', showMovieList);
 app.post('/movies', addMovie);
-app.get('/movies/:movie_id', showMovieDetail);
-app.delete('/movies/:movie_id', deleteMovie);
-app.put('/movies/:movie_id', editMovie);
-app.post('/movies/:movie_id', addReview);	
+app.get('/movies/:id', showMovieDetail);
+app.delete('/movies/:id', deleteMovie);
+app.put('/movies/:id', editMovie);
 
-app.use(function(req, res) {
-   res.sendStatus(400);
-});
+app.use(showMovieList);
 
 // // 여기까지 오면 - 그냥 목록 출력
 // app.use('/', showMovieList);
@@ -29,22 +28,34 @@ app.listen(3000, function () {
 	console.log('Moviest Server is listening @ 3000');
 });
 
-var movies = {
-	"아바타": {
-		"title": "아바타",
-		"director": "제임스 카메론",
-		"year": 2009,
-		"synopsis": "인류의 마지막 희망, 행성 판도라! 이 곳을 정복하기 위한 ‘아바타 프로젝트’가 시작된다!",
-		"reviews": []
+
+// 영화 ID 생성용
+var lastId = 2;
+var movies = [];
+try {
+	const fs = require('fs');
+	var content = fs.readFileSync('movieData.json', 'utf8');
+	movies = JSON.parse(content);
+}
+catch ( error ) {
+	console.log('영화 데이터 읽기 에러. movieData.json 파일 확인', error);
+	process.exit();
+}
+
+function getMovie(id) {
+	for(var movie of movies) {
+		if ( movie.id == id ) {
+			return movie;
+		}
 	}
+	return null;
 }
 
 function showMovieList(req, res) {
    var list = [];
-   for (var movie_id in movies) {
-      var item = movies[movie_id];
-      list.push({ title: item.title, movie_id: movie_id });
-   }
+	for (var movie of movies) {
+		list.push({title:movie.title, id:movie.id});
+	}
 
    var result = {
       count: list.length,
@@ -58,11 +69,12 @@ function addMovie(req, res) {
    var title = req.body.title;
 	// 제목이 없으면 에러
 	if (!title) {
-		res.status(400).send({ msg: 'no title' });
+		res.status(400).send({ msg: 'Error : 영화 제목 없음' });
       return;
 	}
 
 	var newItem = {
+		id : ++lastId,
 		title: title,
 		reviews: []
 	};
@@ -77,7 +89,7 @@ function addMovie(req, res) {
 		var year = parseInt(req.body.year);
 		// 연도는 숫자로만
 		if (!year) {
-			res.status(400).send({ msg: 'year는 int 타입' });
+			res.status(400).send({ msg: 'Error : year는 숫자만 입력' });
 			return;
 		}
 		newItem['year'] = year;
@@ -88,60 +100,52 @@ function addMovie(req, res) {
 		newItem['synopsis'] = synopsis;
 	}
 
-	movies[title] = newItem;
+	movies.push(newItem);
 
-   var result = { 'newMovieId': title };
-
-	res.json(result);
+	res.json({msg:'새 영화 추가 성공', data : newItem});
 }
 
 function showMovieDetail(req, res) {
-	var movie_id = req.params.movie_id;
-	if (!movie_id) {
+	const id = req.params.id;
+	const movie = getMovie(id);
+	if ( ! movie ) {
 		res.status(404).send({ msg: 'Not Found' });
 		return;
 	}
 
-	var item = movies[movie_id];
-
-	if (!item) {
-		// 에러 처리 404
-		res.status(404).send({ msg: 'Not Found' });
-		return;
-	}
-
-	res.status(200).json({ movie_id: movie_id, 'movie': item })
+	res.status(200).json(movie);
 }
 
 // 영화 삭제
 function deleteMovie(req, res) {
-	var movie_id = req.params.movie_id;
-	
-	// 없는 영화 ID면 400번 에러
-	if (!movies[movie_id]) {
-		res.status(404).send({ msg: 'Not Found' });
-		return;
+	const id = req.params.id;
+
+	for(var i = 0 ; i < movies.length ; i++) {
+		const movie = movies[i];
+		if ( movie.id == id) {
+			movies.splice(i, 1);
+			res.status(200).send({msg:'삭제 성공', data:movie});
+			return;
+		}
 	}
 
-	delete movies[movie_id];
-	res.send({ msg: 'delete success' });
-
+	// 없는 영화 ID면 400번 에러
+	res.status(404).send({ msg: 'Not Found' });
 }
 
 function editMovie(req, res) {
-	var movie_id = req.params.movie_id;
-	
-	// movie_id에 해당하는 영화 정보 얻기
-	var item = movies[movie_id];
-	if (!item) {
-		res.status(404).send({ msg: 'Not Found' });
+	const id = req.params.id;
+	var movie = getMovie(id);
+
+	if ( ! movie ) {
+		res.status(404).send({ msg: 'Error : 수정하려는 영화 정보 없음' });
 		return;
 	}
 
 	// 감독 정보 수정
 	var director = req.body.director;
 	if (director) {
-		item['director'] = director;
+		movie['director'] = director;
 	}
 
 	// 연도 수정
@@ -153,36 +157,14 @@ function editMovie(req, res) {
 			res.status(400).send({ msg: 'year는 int 타입' });
 			return;
 		}
-		item['year'] = year;
+		movie['year'] = year;
 	}
 
 	// 시놉시스 수정
 	var synopsis = req.body.synopsis;
 	if (synopsis) {
-		item['synopsis'] = synopsis;
+		movie['synopsis'] = synopsis;
 	}
 	
-	res.send({msg:'수정 성공'});
-}
-
-function addReview(req, res) {
-	var movie_id = req.params.movie_id;
-
-	// 작성한 리뷰	
-	var review = req.body.review;
-	if (!review) {
-		res.status(400).send({ msg: 'review가 없음' });
-		return;
-	}
-	
-	// movie_id에 해당하는 영화 정보 얻기
-	var movie = movies[movie_id];
-	if (!movie) {
-		res.status(404).send({ msg: 'Not Found' });
-		return;
-	}
-
-	movie.reviews.push(review);
-
-	res.send({ msg: 'Add Review success' });
+	res.send({msg:'수정 성공', data:movie});
 }
