@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient client;
     private String serverAddress = "http://192.168.0.129:3000/upload";
     private TextView resultTextView;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         client = new OkHttpClient();
+
+        gson = new Gson();
 
         final EditText mNameField = (EditText) findViewById(R.id.nameEditText);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
@@ -45,6 +50,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // GSON
+    public class Data {
+        NameObject data;
+
+        class NameObject {
+
+            String name;
+
+            public NameObject(String name) {
+                this.name = name;
+            }
+        }
+    }
+
     class NetworkTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -52,9 +71,17 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String name = params[0];
 
-                // JSON 준비
+                // JSON 준비 - 문자열
                 String jsonStr = "{ \"data\" : { \"name\":\"" + name + "\" } }";
-                RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr);
+
+                // GSON
+                Data rootObj = new Data();
+                rootObj.data = rootObj.new NameObject(name);
+                String jsonStr2 = gson.toJson(rootObj);
+
+                Log.d(TAG, "GSON : " + jsonStr2);
+
+                RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonStr2);
 
                 // 요청
                 Request request = new Request.Builder().url(serverAddress).post(body).build();
