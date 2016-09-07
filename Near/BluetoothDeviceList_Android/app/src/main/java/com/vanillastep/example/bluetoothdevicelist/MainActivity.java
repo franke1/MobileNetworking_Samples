@@ -1,5 +1,6 @@
 package com.vanillastep.example.bluetoothdevicelist;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
@@ -7,6 +8,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "Bluetooth-Sample";
    private static final int BLUETOOTH_ENABLE_REQUEST = 1;
+   private static final int COARSE_LOCATION_PERMISSION_REQUEST = 2;
    private BluetoothAdapter bluetoothAdapter;
 
    private TextView stateLabel;
@@ -74,7 +81,32 @@ public class MainActivity extends AppCompatActivity {
       });
    }
 
-   public void startDiscover() {
+   // 런타임 권한 요청 결과
+   @Override
+   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+      if ( COARSE_LOCATION_PERMISSION_REQUEST == requestCode ) {
+         int requestResult = grantResults[0];
+         if ( requestResult == PackageManager.PERMISSION_GRANTED ) {
+            Log.d(TAG, "요청 승인");
+            startDiscover();
+         }
+         else {
+            Toast.makeText(this, "위치 접근 권한 승인이 필요합니다", Toast.LENGTH_SHORT).show();
+         }
+      }
+   }
+
+   private void startDiscover() {
+      // 블루투스 장치 검색을 위한 런타임 권한 체크
+      int coarseLocationCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+      if ( coarseLocationCheck != PackageManager.PERMISSION_GRANTED ) {
+         Log.d(TAG, "ACCESS_COARSE_LOCATION 권한 요청 필요 " + coarseLocationCheck);
+         String[] permission = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
+         ActivityCompat.requestPermissions(this, permission, COARSE_LOCATION_PERMISSION_REQUEST);
+         return;
+      }
+
       if (!bluetoothAdapter.isEnabled()) {
          Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
          startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
