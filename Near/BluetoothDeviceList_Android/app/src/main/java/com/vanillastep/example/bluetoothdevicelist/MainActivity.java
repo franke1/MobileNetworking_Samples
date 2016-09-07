@@ -65,9 +65,16 @@ public class MainActivity extends AppCompatActivity {
          newDeviceListAdapter = new ArrayAdapter<DeviceInfo>(this, android.R.layout.simple_list_item_1);
          newDeviceList.setAdapter(newDeviceListAdapter);
       }
+
+      findViewById(R.id.discoveryButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            startDiscover();
+         }
+      });
    }
 
-   public void startDiscover(View v) {
+   public void startDiscover() {
       if (!bluetoothAdapter.isEnabled()) {
          Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
          startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
@@ -106,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
          if ( RESULT_OK == resultCode ) {
             stateLabel.setText("블루투스 활성화");
             // 다시 장치 검색 시작
-            startDiscover(null);
+            startDiscover();
          }
          else {
             stateLabel.setText("블루투스 활성화 거부");

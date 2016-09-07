@@ -16,10 +16,10 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/discoveryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="검색"
-            android:onClick="startDiscover"/>
+            android:text="검색" />
 
         <TextView
             android:id="@+id/stateLabel"
