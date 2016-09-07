@@ -16,7 +16,7 @@ import java.net.SocketException;
 
 public class MainActivity extends AppCompatActivity {
 
-   static final String host = "192.168.0.16";
+   static final String host = "192.168.0.129";
    static final int port = 3001;
 
    private static final String TAG = "UDP_Exercise";
@@ -26,16 +26,12 @@ public class MainActivity extends AppCompatActivity {
    private Handler mHandler;
 
    private MessageReceiver mMessageThread;
-   private DatagramSocket mSocket;
+
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
-
-      // 서버 주소 출력
-      TextView address = (TextView)findViewById(R.id.address);
-      address.setText("UDP Echo Server - " + host + ":" + port);
 
       mMessage = (EditText) findViewById(R.id.message);
       mResultView = (TextView) findViewById(R.id.resultView);
@@ -43,37 +39,49 @@ public class MainActivity extends AppCompatActivity {
       // 화면 출력용
       mHandler = new Handler();
 
-      try {
-         mSocket = new DatagramSocket();
-      } catch (SocketException e) {
-         e.printStackTrace();
-      }
-
       mMessageThread = new MessageReceiver();
       mMessageThread.start();
-   }
 
-   public void sendMessage(View v) {
-      final String msg = mMessage.getText().toString();
-      mResultView.append("Send >> " + msg + "\n");
-      // 메세지 발송 용 쓰레드 생성
-      new Thread() {
+      findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
          @Override
-         public void run() {
-            try {
-               byte[] data = msg.getBytes();
-               DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(host), port);
-               mSocket.send(packet);
-            } catch (Exception e) {
-               e.printStackTrace();
-               Log.e(TAG, "Exception", e);
-            }
+         public void onClick(View v) {
+            String msg = mMessage.getText().toString();
+            mResultView.append("Send >> " + msg + "\n");
+            mMessageThread.send(msg);
          }
-      }.start();
+      });
    }
 
    // 메세지 수신 용 쓰레드
    class MessageReceiver extends Thread {
+      private DatagramSocket mSocket;
+
+      MessageReceiver() {
+         try {
+            mSocket = new DatagramSocket();
+         } catch (SocketException e) {
+            Log.e(TAG, "Error : " + e.getMessage());
+            e.printStackTrace();
+         }
+      }
+
+      public void send(final String message) {
+         // 메세지 발송 쓰레드
+         new Thread() {
+            @Override
+            public void run() {
+               try {
+               byte[] data = message.getBytes();
+               DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(host), port);
+               mSocket.send(packet);
+               } catch (Exception e) {
+                  e.printStackTrace();
+                  Log.e(TAG, "Exception", e);
+               }
+            }
+         }.start();
+      }
+
       @Override
       public void run() {
          try {

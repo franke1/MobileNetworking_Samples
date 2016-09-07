@@ -4,11 +4,9 @@ var port = 3001;
 var memberships = [];
 
 var socket = dgram.createSocket('udp4', function(msg, rinfo) {
-   console.log('Received %d bytes from %s:%d\n', msg.length, rinfo.address, rinfo.port);
-   console.log('Received : ' + msg.toString('utf-8'));
-   // console.log('message : ', msg);
-   
-   console.log('rinfo : ', rinfo);
+   console.log('Received : ', msg.toString('utf-8'), 'from : ', rinfo.address);
+
+   // echo
 	socket.send(msg, 0, msg.length, rinfo.port, rinfo.address);
 });
 socket.bind(port);
