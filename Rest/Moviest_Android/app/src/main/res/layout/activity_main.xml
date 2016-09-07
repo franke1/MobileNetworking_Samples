@@ -9,20 +9,14 @@
               android:paddingTop="@dimen/activity_vertical_margin"
               tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/serverAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="http://192.168.205.131:3000"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/refreshButton"
             android:text="Refresh"
-            android:onClick="refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

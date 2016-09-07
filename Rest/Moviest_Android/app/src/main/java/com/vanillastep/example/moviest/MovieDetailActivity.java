@@ -9,19 +9,18 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import okhttp3.OkHttpClient;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
    private static final String TAG = "MovieDetail";
-   private RequestQueue mQueue;
+   private RequestQueue queue;
    private TextView mMovieInfo;
+   private OkHttpClient httpClient;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -30,23 +29,25 @@ public class MovieDetailActivity extends AppCompatActivity {
 
       mMovieInfo = (TextView) findViewById(R.id.movieInfo);
 
-      mQueue = RequestQueueSingleton.getInstance(this).getRequestQueue();
 
+      // Singleton으로 Volley의 큐 얻기
+      queue = RequestQueueSingleton.getInstance(this).getRequestQueue();
+
+      // Singleton으로 OkHttp의 HttpClient 얻기
+      httpClient = OkHttpClientSingleton.getInstance().getHttpClient();
    }
 
    @Override
    protected void onResume() {
       super.onResume();
-      Log.d(TAG, "Server Address : " + MainActivity.SERVER_ADDRESS);
       resolveMovieDetail();
    }
 
    void resolveMovieDetail() {
       try {
          String movieId = getIntent().getStringExtra("movieId");
-         // 공백 문자가 +가 된다. %20으로 변환
-         String encoded = URLEncoder.encode(movieId, "UTF-8").replace("+", "%20");
-         String url = MainActivity.SERVER_ADDRESS + "/movies/" + encoded;
+
+         String url = MainActivity.ServerAddress + "/movies/" + movieId;
          Log.d(TAG, "MovieDetail : " + url);
 
          JsonObjectRequest request = new JsonObjectRequest(url, new Response.Listener<JSONObject>() {
@@ -65,7 +66,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             }
          });
-         mQueue.add(request);
+         queue.add(request);
       } catch (Exception e) {
          Log.e(TAG, "Exception", e);
          e.printStackTrace();
