@@ -1,5 +1,6 @@
 package com.vanillastep.example.bluetoothchat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,7 +8,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -22,6 +28,7 @@ import java.util.Set;
 public class DeviceListActivity extends AppCompatActivity {
 
    private static final String TAG = "DeviceListActivity";
+   private static final int COARSE_LOCATION_PERMISSION_REQUEST = 1;
    public static String SELECTED_DEVICE_ADDRESS = "device_address";
 
 
@@ -31,20 +38,98 @@ public class DeviceListActivity extends AppCompatActivity {
    private BluetoothAdapter bluetoothAdapter;
    private ArrayList<BluetoothDevice> deviceList;
 
-   public void cancelDiscovery(View v) {
-      setResult(Activity.RESULT_CANCELED);
-      finish();
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_device_list);
+
+      bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+      ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
+      pairedDeviceAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+      pairedListView.setAdapter(pairedDeviceAdapter);
+      pairedListView.setOnItemClickListener(mDeviceClickListener);
+
+
+      ListView newDeviceListView = (ListView)findViewById(R.id.new_devices);
+      newDeviceAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+      newDeviceListView.setAdapter(newDeviceAdapter);
+      newDeviceListView.setOnItemClickListener(mDeviceClickListener);
+
+      IntentFilter filter = new IntentFilter();
+      filter.addAction(BluetoothDevice.ACTION_FOUND);
+      filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+      this.registerReceiver(mReceiver, filter);
+
+      resolvePairedDevices();
+
+      findViewById(R.id.scanButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            startDiscover();
+         }
+      });
+
+      findViewById(R.id.stopButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            stopDiscover();
+         }
+      });
+   }
+
+   @Override
+   protected void onStop() {
+      super.onStop();
+
+      // 중지
+      if (bluetoothAdapter != null) {
+         bluetoothAdapter.cancelDiscovery();
+      }
+      this.unregisterReceiver(mReceiver);
    }
 
    @Override
    protected void onResume() {
       super.onResume();
-
-      startDiscovery(null);
+      startDiscover();
    }
 
-   public void startDiscovery(View v) {
-      Log.d(TAG, "startDiscovery");
+   private void stopDiscover() {
+      setResult(Activity.RESULT_CANCELED);
+      finish();
+   }
+
+
+   // 런타임 권한 요청 결과
+   @Override
+   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+      if ( COARSE_LOCATION_PERMISSION_REQUEST == requestCode ) {
+         int requestResult = grantResults[0];
+         if ( requestResult == PackageManager.PERMISSION_GRANTED ) {
+            startDiscover();
+         }
+         else {
+            Toast.makeText(this, "위치 접근 권한 승인이 필요합니다", Toast.LENGTH_SHORT).show();
+         }
+      }
+   }
+
+   void startDiscover() {
+      // 블루투스 장치 검색을 위한 런타임 권한 체크
+      int coarseLocationCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+      if ( coarseLocationCheck != PackageManager.PERMISSION_GRANTED ) {
+         Log.d(TAG, "ACCESS_COARSE_LOCATION 권한 요청 필요 " + coarseLocationCheck);
+         String[] permission = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
+         ActivityCompat.requestPermissions(this, permission, COARSE_LOCATION_PERMISSION_REQUEST);
+         return;
+      }
+
+      newDeviceAdapter.clear();
+      newDeviceAdapter.notifyDataSetChanged();
 
       // 검색 중이면 중지 후 기기 검색
       if (bluetoothAdapter.isDiscovering()) {
@@ -113,41 +198,4 @@ public class DeviceListActivity extends AppCompatActivity {
       }
    }
 
-   @Override
-   protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_device_list);
-
-      bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-      ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
-      pairedDeviceAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
-      pairedListView.setAdapter(pairedDeviceAdapter);
-      pairedListView.setOnItemClickListener(mDeviceClickListener);
-
-
-      ListView newDeviceListView = (ListView)findViewById(R.id.new_devices);
-      newDeviceAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
-      newDeviceListView.setAdapter(newDeviceAdapter);
-      newDeviceListView.setOnItemClickListener(mDeviceClickListener);
-
-      IntentFilter filter = new IntentFilter();
-      filter.addAction(BluetoothDevice.ACTION_FOUND);
-      filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-      this.registerReceiver(mReceiver, filter);
-
-      resolvePairedDevices();
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
-
-      // 중지
-      if (bluetoothAdapter != null) {
-         bluetoothAdapter.cancelDiscovery();
-      }
-      this.unregisterReceiver(mReceiver);
-   }
 }
