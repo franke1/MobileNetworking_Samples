@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
    void connectToServer() {
       Log.d(TAG, "trying to connect to websocket server");
       AsyncHttpClient client = AsyncHttpClient.getDefaultInstance();
-      client.websocket(serverAddress, "chat-protocol", new AsyncHttpClient.WebSocketConnectCallback() {
+      client.websocket(serverAddress, null, new AsyncHttpClient.WebSocketConnectCallback() {
          @Override
          public void onCompleted(Exception ex, WebSocket webSocket) {
             if ( ex != null ) {
