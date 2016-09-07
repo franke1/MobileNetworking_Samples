@@ -59,7 +59,7 @@ function showMovieList(req, res) {
 
    var result = {
       count: list.length,
-      movies: list
+      data: list
    };
    return res.json(result);
 }
@@ -75,8 +75,7 @@ function addMovie(req, res) {
 
 	var newItem = {
 		id : ++lastId,
-		title: title,
-		reviews: []
+		title: title
 	};
 
    var director = req.body.director;
