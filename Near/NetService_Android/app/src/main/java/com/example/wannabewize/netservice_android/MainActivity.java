@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceFound(final NsdServiceInfo nsdServiceInfo) {
-            Log.d(TAG, "onServiceFound");
+            Log.d(TAG, "서비스 검색 성공");
 
             NsdServiceInfo service = getServiceInfoWithName(nsdServiceInfo.getServiceName());
             if ( service == null ) {
@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
             // 주소 정보 얻어오기
             if ( nsdServiceInfo.getHost() == null ) {
+                // 서비스 상세 정보 얻기
                 mNsdManager.resolveService(nsdServiceInfo, new NsdManager.ResolveListener() {
                     @Override
                     public void onResolveFailed(NsdServiceInfo info, int i) {
