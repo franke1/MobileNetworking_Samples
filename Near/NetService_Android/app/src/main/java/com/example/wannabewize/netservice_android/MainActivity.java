@@ -54,19 +54,19 @@ public class MainActivity extends AppCompatActivity {
                 view = inflator.inflate(android.R.layout.simple_list_item_2, viewGroup, false);
             }
 
-            TextView textView1 = (TextView) view.findViewById(android.R.id.text1);
-            TextView textView2 = (TextView) view.findViewById(android.R.id.text2);
+            TextView nameLabel = (TextView) view.findViewById(android.R.id.text1);
+            TextView addressLabel = (TextView) view.findViewById(android.R.id.text2);
 
             NsdServiceInfo info = (NsdServiceInfo) getItem(i);
 
-            textView1.setText(info.getServiceName());
+            nameLabel.setText(info.getServiceName());
 
             InetAddress host = info.getHost();
             if ( host != null ) {
-                textView2.setText(host.getHostAddress());
+                addressLabel.setText(host.getHostAddress());
             }
             else {
-                textView2.setText("address is not available");
+                addressLabel.setText("address is not available");
             }
 
             return view;

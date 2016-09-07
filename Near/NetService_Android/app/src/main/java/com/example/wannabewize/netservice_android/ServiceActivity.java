@@ -121,7 +121,6 @@ public class ServiceActivity extends AppCompatActivity {
         }
     }
 
-
     private void makeNewService() {
         // 서비스 이름 설정 다이얼로그
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
