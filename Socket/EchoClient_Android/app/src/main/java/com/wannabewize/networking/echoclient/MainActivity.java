@@ -2,7 +2,6 @@ package com.wannabewize.networking.echoclient;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,12 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 
@@ -24,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
    private static final String TAG = "EchoClientApp";
 
-   // 소켓
-   private Socket socket;
+   static final String host = "192.168.0.129";
+   static final int port = 3000;
+
    // 메세지 입력용
    private EditText userInput;
    // 결과 출력용
@@ -38,35 +36,55 @@ public class MainActivity extends AppCompatActivity {
 
       userInput = (EditText)findViewById(R.id.messageInput);
       resultView = (TextView)findViewById(R.id.resultView);
+
+      findViewById(R.id.connectButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            connectToServer();
+         }
+      });
+
+      findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            closeConnection();
+         }
+      });
+
+      findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            sendMessage();
+            userInput.setText(null);
+         }
+      });
    }
 
 
    // 연결 버튼을 누르면 동작
-   public void connectToServer(View v) {
-      EditText ipInput = (EditText) findViewById(R.id.ipInput);
-      EditText portInput = (EditText) findViewById(R.id.portInput);
+   private void connectToServer() {
 
       try {
-         String host = ipInput.getText().toString();
-         int port = Integer.parseInt(portInput.getText().toString());
-
-         messageSender = new MessageSender(host, port);
+         resultView.append("서버 연결 시도\n");
+         messageSender = new MessageThread();
          messageSender.start();
       } catch (Exception e) {
+         resultView.append("연결 에러 : " + e.getMessage() + "\n");
          e.printStackTrace();
-         String msg = resultView.getText() + "\n" + e.getMessage();
-         resultView.setText(msg);
       }
    }
 
 
    // 종료 버튼을 누르면 동작
-   public void closeConnection(View v) {
-      messageSender.disconnect();
+   private void closeConnection() {
+      if ( messageSender != null && messageSender.isConnected() ) {
+         messageSender.disconnect();
+      }
+      messageSender = null;
    }
 
    // 전송 버튼을 누르면 동작
-   public void sendMessage(View v) {
+   private void sendMessage() {
       if ( ! messageSender.isConnected() ) {
          Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
          return;
@@ -77,32 +95,12 @@ public class MainActivity extends AppCompatActivity {
 
 
    // UI에 컨텐츠 출력을 위한 핸들러
-   private Handler handler = new Handler() {
-      @Override
-      public void handleMessage(Message msg) {
-         if ( -1 == msg.what ) {
-            resultView.append("서버와 연결 실패\n");
-         }
-         else if ( 1 == msg.what ) {
-            resultView.append("서버와 연결 성공\n");
-         }
-         else if ( 2 == msg.what ) {
-            resultView.append("서버 메세지 : " + msg.obj + "\n");
+   private Handler handler = new Handler();
 
-         }
-      }
-   };
-
-
-   private MessageSender messageSender;
-   class MessageSender extends Thread {
-      private String host;
-      private int port;
-
-      MessageSender(String host, int port) throws IOException {
-         this.host = host;
-         this.port = port;
-      }
+   private MessageThread messageSender;
+   class MessageThread extends Thread {
+      // 소켓
+      private Socket socket;
 
       boolean isConnected() {
          return socket != null && socket.isConnected();
@@ -122,7 +120,9 @@ public class MainActivity extends AppCompatActivity {
       public void disconnect() {
          try {
             socket.close();
+            resultView.append("서버 연결 종료\n");
          } catch (IOException e) {
+            resultView.append("연결 종료 에러 : " + e.getMessage() + "\n");
             Log.d(TAG, "Socket Close Error", e);
             e.printStackTrace();
          }
@@ -133,29 +133,46 @@ public class MainActivity extends AppCompatActivity {
          try {
             socket = new Socket(host, port);
             if ( false == socket.isConnected() ) {
-               handler.sendEmptyMessage(-1);
+               handler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                     resultView.append("서버 연결 실패\n");
+                  }
+               });
                return;
             }
             else {
-               handler.sendEmptyMessage(1);
+               handler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                     resultView.append("서버 연결 성공\n");
+                  }
+               });
             }
 
             // 입력 스트림과 버퍼 기반의 Reader
             InputStream is = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
-            String line;
-
             while ( true ) {
-               line = reader.readLine();
+               final String line = reader.readLine();
                if ( line == null ) {
+                  handler.post(new Runnable() {
+                     @Override
+                     public void run() {
+                        resultView.append("서버와 연결 끊어짐\n");
+                     }
+                  });
                   break;
                }
 
-               Message msg = new Message();
-               msg.what = 2;
-               msg.obj = line;
-               handler.sendMessage(msg);
+               handler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                     resultView.append("서버 메세지 : " + line + "\n");
+                  }
+               });
+
                Log.d(TAG, "reading.. " + line);
             }
 
@@ -165,9 +182,9 @@ public class MainActivity extends AppCompatActivity {
             is.close();
             socket.close();
          } catch (IOException e) {
+            Log.e(TAG, "Error : " + e.getMessage());
             e.printStackTrace();
-            handler.sendEmptyMessage(-1);
          }
       } // run
-   } // MessageSender - Thread
+   } // MessageThread - Thread
 }

@@ -1,9 +1,7 @@
 var net = require('net');
 var server = net.createServer(function (socket) {
    console.log('connect ' + socket.remoteAddress);
-
-   socket.on('connect', function () {
-   });
+   socket.write('Welcome To TCP EchoService\n');
    
    // 클라이언트의 데이터 전송 이벤트
    socket.on('data', function (data) {
