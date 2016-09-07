@@ -9,26 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonGroup">
-        
-        <TextView
-            android:id="@+id/serverAddress"
-            android:layout_weight="0.6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/connectButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
             android:text="연결"/>
 
         <Button
             android:id="@+id/disconnectButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
             android:text="종료"/>
+
+        <Button
+            android:id="@+id/chageNameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이름 변경"/>
 
     </LinearLayout>
 

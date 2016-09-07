@@ -3,18 +3,35 @@ var net = require('net');
 var sockets = [];
 
 var server = net.createServer(function (socket) {
+   var name = 'Guest' + Math.floor(Math.random()*100);
+   socket.name = name;
    // Connection Event
    console.log('Remote Address : ', socket.remoteAddress);
    
    // 클라이언트와 접속한 소켓을 채팅 클라이언트 목록에 추가
    sockets.push(socket);      
    socket.write('Welcome to TCP Chat Service\n');
+   socket.write('당신의 이름은 ' + name + ' 입니다.\n');
 
    socket.on('data', function (data) {
-      console.log(socket.remoteAddress + ' << ' + data);      
-      sockets.forEach(function (item) {
-         item.write(socket.remoteAddress + ' >> ' + data);
-      });
+      var message = data.toString('UTF-8');
+      if ( message.indexOf('\\rename') != -1 ) {
+         const oldName = socket.name;
+         const newName = message.split(' ')[1];
+         socket.name = newName;
+         socket.write('이름 변경 성공\n');
+         sockets.forEach(function (item) {
+            if ( item !== socket ) {
+               item.write(oldName + "님이 " + newName + "으로 이름 변경\n");   
+            }            
+         });
+      }
+      else {
+         console.log(socket.name + ' << ' + message);      
+         sockets.forEach(function (item) {
+            item.write(socket.name + ' >> ' + message);
+         });
+      }
    });
 
    socket.on('end', function () {

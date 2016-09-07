@@ -1,13 +1,12 @@
 package com.vanillastep.example.chatclient;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,13 +20,19 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
-   String host = "192.168.0.16";
-   int port = 3000;
+   final String host = "192.168.0.129";
+   final int port = 3000;
 
    private static final String TAG = "ChatClient_Example";
 
    private EditText userInput;
    private TextView resultView;
+
+   // 채팅 쓰레드
+   ChatThread chatThread;
+
+   // 채팅 이름 변경 다이얼로그
+   private AlertDialog chatnameChangeDialog;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -37,24 +42,48 @@ public class MainActivity extends AppCompatActivity {
       userInput = (EditText) findViewById(R.id.messageInput);
       resultView = (TextView) findViewById(R.id.resultView);
 
-      Button connectButton = (Button)findViewById(R.id.connectButton);
-      connectButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.connectButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             connectToServer();
          }
       });
 
-      Button disconnectButton = (Button)findViewById(R.id.disconnectButton);
-      disconnectButton.setOnClickListener(new View.OnClickListener() {
+      findViewById(R.id.disconnectButton).setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             closeConnection();
          }
       });
 
-      TextView address = (TextView) findViewById(R.id.serverAddress);
-      address.setText(host + ":" + port);
+      findViewById(R.id.chageNameButton).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            if (chatThread != null && chatThread.isConnected() ) {
+               showNameChangeDialog();
+            }
+            else {
+               Toast.makeText(MainActivity.this, "서비스에 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+            }
+         }
+      });
+   }
+
+   private void showNameChangeDialog() {
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setTitle("이름 입력")
+              .setView(R.layout.chatname_dialog)
+              .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                 @Override
+                 public void onClick(DialogInterface dialogInterface, int i) {
+                    EditText editText = (EditText) chatnameChangeDialog.findViewById(R.id.chatName);
+                    String chatName = editText.getText().toString();
+                    chatThread.changeChatName(chatName);
+                 }
+              })
+              .setNegativeButton("Cancel", null);
+      chatnameChangeDialog = builder.create();
+      chatnameChangeDialog.show();
    }
 
    // 연결 버튼의 이벤트 리스너
@@ -65,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
       }
 
       try {
-         chatThread = new ChatThread(host, port);
+         chatThread = new ChatThread();
          chatThread.start();
       } catch (Exception e) {
          Log.e(TAG, "Connect Error", e);
@@ -95,35 +124,10 @@ public class MainActivity extends AppCompatActivity {
       }
    }
 
-   // UI에 컨텐츠 출력을 위한 핸들러
-   class ChatMessageHandler extends Handler {
-      @Override
-      public void handleMessage(Message msg) {
-         String str = (String) msg.obj;
-         resultView.setText(resultView.getText().toString() + "\n" + str);
-      }
-
-      public void printMessage(String str) {
-         Message msg = new Message();
-         msg.obj = str;
-         sendMessage(msg);
-      }
-   }
-
-   private ChatMessageHandler mHanlder = new ChatMessageHandler();
-
-   // 채팅 쓰레드
-   ChatThread chatThread;
+   private Handler handler = new Handler();
 
    class ChatThread extends Thread {
-      private String host;
-      private int port;
       private Socket socket;
-
-      ChatThread(String host, int port) {
-         this.host = host;
-         this.port = port;
-      }
 
       boolean isConnected() {
          if (socket == null)
@@ -133,9 +137,21 @@ public class MainActivity extends AppCompatActivity {
 
       void sendMessage(String message) {
          try {
-            //Log.d(TAG, "Is Main Thread ? " + (Looper.getMainLooper() == Looper.myLooper()));
+            // Log.d(TAG, "메인 쓰레드 ? " + (Looper.getMainLooper() == Looper.myLooper()));
             OutputStream os = socket.getOutputStream();
             os.write(message.getBytes());
+            os.flush();
+         } catch (IOException e) {
+            Log.e(TAG, "Exception", e);
+            e.printStackTrace();
+         }
+      }
+
+      void changeChatName(String name) {
+         try {
+            OutputStream os = socket.getOutputStream();
+            String renameCtrl = "\\rename " + name;
+            os.write(renameCtrl.getBytes());
             os.flush();
          } catch (IOException e) {
             Log.e(TAG, "Exception", e);
@@ -163,20 +179,30 @@ public class MainActivity extends AppCompatActivity {
 
             is = socket.getInputStream();
             reader = new BufferedReader(new InputStreamReader(is));
-            String line;
             while (true) {
-               line = reader.readLine();
+               final String line = reader.readLine();
                if (line == null)
                   break;
 
-               mHanlder.printMessage(line);
+               handler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                     resultView.append(line + "\n");
+                  }
+               });
             }
          } catch (IOException e) {
             Log.e(TAG, "Exception", e);
          }
          finally {
             Log.d(TAG, "closing socket, reader, is");
-            mHanlder.printMessage("Chat service disconnected");
+            handler.post(new Runnable() {
+               @Override
+               public void run() {
+                  resultView.append("Chat service disconnected");
+               }
+            });
+
             try {
                if ( reader != null )
                   reader.close();
