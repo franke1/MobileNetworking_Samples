@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket.IO Chat Service</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        var socket = io();
+        socket.on('connect', function() {
+            console.log('Connected');
+        });
+
+        socket.on('chat', function(data) {
+            var message = data.name + ' >> ' + data.message;
+            console.log('Chat Message : ', message);
+            var node = $('<li>').text(message);
+            $('#messages').append(node);
+        });
+
+        $(document).ready(function() {
+            $('#sendButton').click(function() {
+                var message = $('#chatMessage').val();
+                socket.emit('chatInput', {message:message});
+            });
+        });
+
+    </script>
+
+</head>
+<body>
+
+<div>
+    <h3>Socket.IO Chat Service</h3>
+    <input type="text" id="chatMessage" value="hello">
+    <input type="button" id="sendButton" value="Send">
+    <ul id="messages">
+    </ul>
+</div>
+
+</body>
+</html>
