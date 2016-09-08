@@ -50,14 +50,10 @@ Path | 동작
 /badreq | 400번 응답 코드
 /unauth | 401번 응답 코드
 
-
-동작시키기
+서버 동작
 
 $ npm install
-
 $ node Server/errorServer.js
-
-
 
 # HTTP POST 요청
 
@@ -88,6 +84,7 @@ $ node Server/movieListServer.js
 
 ## Multipart 방식 
 
+멀티파트를 이용한 파일과 데이터 업로드
 
 ### Server
 
@@ -147,19 +144,20 @@ get | /movies/ID | 영화 상세 정보 보기
 delete | /movies/ID | 영화 정보 삭제. id는 영화 ID
 put | /movies/ID | 영화 정보 수정. URLEncoded/JSON 방식. title, director, year, synopsis
 
-
 # 인증
 
 ## Cookie
 
+쿠키 저장소 설정 예제. 서버 필요
+
 ### 서버
 
 $ npm install
-
 $ node /Server/cookieServer.js
 
 ### 안드로이드 샘플
 
+- AuthAndSecurity/Cookies_Android : HttpUrlConnection, Volley, OkHttp 쿠키 설정
 
 ## LocalAuth
 
@@ -168,7 +166,6 @@ $ node /Server/cookieServer.js
 /Server/AuthServer
 
 $ npm install
-
 $ node server.js
 
 웹 브라우저에서 확인 가능.
@@ -183,5 +180,30 @@ delete | /logout | 로그아웃
 
 ### 클라이언트
 
-안드로이드 : LocalAuth_Android
+- AuthAndSecurity/LocalAuth_Android : LocalAuth를 이용한 인증/글쓰기
 
+
+## OAuth
+
+준비중
+
+- AuthAndSecurity/FBAuth_Android : Facebook OAuth를 이용한 인증/글쓰기
+
+# 클라우드 메세지
+
+## 서버
+
+- Messaging/Server : FCM 토큰과 기기 ID, 메세지 발송 서버
+
+$ npm install
+$ npm server.js
+
+## 클라이언트
+
+- Messaging/CloudMessaging_Android : FCM을 사용하는 안드로이드 클라이언트
+
+# SNS
+
+## Facebook
+
+- SNS/Facebook_Android : 페이스북 서비스 사용 앱
