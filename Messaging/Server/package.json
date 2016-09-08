@@ -1,0 +1,19 @@
+{
+  "name": "cloud-messaging",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "fcm": "^1.0.3",
+    "fcm-push": "^1.0.7",
+    "morgan": "^1.7.0"
+  }
+}
