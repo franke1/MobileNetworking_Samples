@@ -10,10 +10,11 @@
             $scope.title = 'Small Talks';
             $scope.talks = [];
             $scope.authenciated = false;
+            resolveTalks();
             
             $scope.resolveTalk = function() {
                resolveTalks();
-            };
+            };            
             
             function resolveTalks() {
                $http.get('/talks').success(function(results) {
@@ -74,14 +75,15 @@
    <div>
       <h3>로그인/로그아웃</h3>
       <div ng-show="!loggedIn">
+         <p>등록된 사용자 id : user, pw : 1234</p>
          <form>
             <input type="text" name="username" ng-model="username">
             <input type="password" name="password" ng-model="password">
-            <input type="submit" ng-click="login()">
+            <input type="submit" value="로그인" ng-click="login()">
          </form>
       </div>
       <div ng-show="loggedIn">
-         <input type="button" ng-click="logout()" value="Logoutt" >
+         <input type="button" ng-click="logout()" value="로그아웃" >
       </div> 
    <div>
    <h3>글 목록</h3>

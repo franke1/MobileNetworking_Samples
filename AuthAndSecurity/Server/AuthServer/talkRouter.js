@@ -10,7 +10,7 @@ var talks = [
    "로그인과 글쓰기 예제입니다."];
 
 function showWebPage(req, res) {
-   res.sendFile(__dirname + '/public/index.html');
+   res.sendFile(__dirname + '/index.html');
 }
 
 function showTalks(req, res) {
