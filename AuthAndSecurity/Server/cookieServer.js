@@ -1,7 +1,7 @@
-var express = require('express');
-var cookieParser = require('cookie-parser')
+const express = require('express');
+const cookieParser = require('cookie-parser')
 
-var app = express();
+const app = express();
 // 쿠키 파서 - req.cookies 사용 가능
 app.use(cookieParser());
 
@@ -39,7 +39,6 @@ app.use(function(req, res) {
 		last : last
 	}
 	res.json(visitInfo);
-	
 });
 
 app.listen(3000, function() {

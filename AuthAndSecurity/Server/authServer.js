@@ -1,7 +1,4 @@
 var express = require('express');
-var http = require('http');
-var fs = require('fs');
-
 var app = express();
 
 // 로그 기록
@@ -50,48 +47,15 @@ passport.serializeUser(function(user, done) {
 // 세션에서 사용자 정보 얻어오기
 passport.deserializeUser(function(id, done) {
   console.log('deserializeUser', id);
-   if ( id == 'user') {
-      var user = {
-         id : id
-      }
-      done(null, user);      
+   var user = {
+      id : id
    }
-   else {
-      done(null, false, {message:'deserializeUser Fail'});
-   }
+   done(null, user);      
 });
 
 // bodyParser : POST 메세지 파싱
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }))
-
-// HTTP Server
-var server = http.createServer(app);
-server.listen(3000, function(err) {
-   if ( err ) {
-      console.error('Error', err);
-   }
-   else {
-      console.log('Http server is listening @ 3000');
-   }
-});
-
-// HTTPS Server
-var options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-};
-
-var https = require('https');
-var secureServer = https.createServer(options, app);
-secureServer.listen(3001, function(err) {
-   if ( err ) {
-      console.error('Error', err);
-   }
-   else {
-      console.log('Https server is listening @ 3001');
-   }   
-});
 
 // 인증 여부 체크
 function isAuthenticated(req, res, next) {
@@ -114,7 +78,7 @@ app.post('/login', passport.authenticate('local'), function(req, res) {
    res.sendStatus(200);
 });
 
-app.get('/hello', sayHello);
+app.get('/', showWebPage);
 app.get('/talks', showTalks);
 app.post('/talks', isAuthenticated, postTalk);
 
@@ -124,6 +88,25 @@ function showTalks(req, res) {
       talks : talks
    };
    res.json(result);
+}
+
+function showWebPage(req, res) {
+   var html = '<html>';
+   html += '<body>';
+   html += '<h3>글 목록</h3>';
+   html += '<ul>';
+   talks.forEach(function(item) {
+      html += '<li>' + item + '</li>'
+   });
+   html += '</ul>';
+   html += '<h3>새로운 글 쓰기</h3>'
+   html += '<form action="/talks">';
+   html += '<input type="text" name="talk"><br/>'
+   html += '<input type="submit">'
+   html += '</form>'
+   html += '</body>';
+   html += '</html>';
+   res.send(html)
 }
 
 function postTalk(req, res) {
@@ -138,7 +121,7 @@ function postTalk(req, res) {
    res.sendStatus(200);
 }
 
-function sayHello(req, res) {
+function showTalk(req, res) {
    res.send('Hello!');
 }
 
@@ -166,3 +149,13 @@ function showLoginForm(req, res) {
 //       res.sendStatus(401);
 // }
 
+
+// HTTP Server
+app.listen(3000, function(err) {
+   if ( err ) {
+      console.error('Error', err);
+   }
+   else {
+      console.log('Http server is listening @ 3000');
+   }
+});
