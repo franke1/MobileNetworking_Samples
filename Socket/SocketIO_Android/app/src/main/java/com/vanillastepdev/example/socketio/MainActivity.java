@@ -132,6 +132,18 @@ public class MainActivity extends AppCompatActivity {
 
             socket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                 @Override
+                public void call(Object... args) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            resultView.append("서버와 연결 끊어짐.\n");
+                        }
+                    });
+                }
+            });
+
+            socket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                @Override
                 public void call(Object... args) {}
 
             });
@@ -146,9 +158,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void changeName(String chatName) {
-            String data = "{ \"name\" : \"" + chatName + "\"}";
             try {
-                socket.emit("rename", new JSONObject(data));
+                JSONObject data = new JSONObject();
+                data.put("name", chatName);
+                socket.emit("rename", data);
             } catch (JSONException e) {
                 Log.d(TAG, "Error : " + e.getMessage());
                 e.printStackTrace();
@@ -156,10 +169,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void sendMessage(String message) {
-            String data = "{ \"message\" : \"" + message + "\"}";
-            Log.d(TAG, "Send : " + data);
             try {
-                socket.emit("chatInput", new JSONObject(data));
+                JSONObject data = new JSONObject();
+                data.put("message", message);
+                socket.emit("chatInput", data);
             } catch (JSONException e) {
                 Log.e(TAG, "Error : " + e.getMessage());
                 e.printStackTrace();
