@@ -26,7 +26,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CloudMessage-Example";
-    private static final String SERVER_ADDRESS = "http://192.168.0.100:3000";
+    private static final String SERVER_ADDRESS = "http://192.168.0.129:3000";
     private static final String REGIST_DEVICE_URL = SERVER_ADDRESS + "/regist";
     private static final String TOPIC = "NEWS";
     private static final String PREFERENCE_SUBSCRIBE_KEY = "PREFERENCE_SUBSCRIBE";
