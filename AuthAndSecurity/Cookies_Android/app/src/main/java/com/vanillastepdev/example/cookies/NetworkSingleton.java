@@ -48,7 +48,7 @@ public class NetworkSingleton {
         // HttpURLConnection 쿠키 매니저 설정
         // 기본 Volley 객체로 생성하면 HttpUrlConnection을 사용한다
         CookieManager cookieManager = new CookieManager();
-        CookieHandler.getDefault().setDefault(cookieManager);
+        CookieHandler.setDefault(cookieManager);
 
         // OkHTTP 용 쿠키 매니저 설정
         // For Persistent Cookie - https://github.com/franmontiel/PersistentCookieJar
